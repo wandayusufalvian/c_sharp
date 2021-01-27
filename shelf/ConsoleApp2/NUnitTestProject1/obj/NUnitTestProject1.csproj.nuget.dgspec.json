@@ -4,14 +4,14 @@
     "C:\\Users\\Tester\\source\\repos\\ConsoleApp2\\NUnitTestProject1\\NUnitTestProject1.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Tester\\source\\repos\\ConsoleApp2\\ConsoleApp2\\ConsoleApp2.csproj": {
+    "C:\\Users\\Tester\\source\\repos\\ConsoleApp2\\ConsoleApp1\\ConsoleApp1.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Tester\\source\\repos\\ConsoleApp2\\ConsoleApp2\\ConsoleApp2.csproj",
-        "projectName": "ConsoleApp2",
-        "projectPath": "C:\\Users\\Tester\\source\\repos\\ConsoleApp2\\ConsoleApp2\\ConsoleApp2.csproj",
+        "projectUniqueName": "C:\\Users\\Tester\\source\\repos\\ConsoleApp2\\ConsoleApp1\\ConsoleApp1.csproj",
+        "projectName": "ConsoleApp1",
+        "projectPath": "C:\\Users\\Tester\\source\\repos\\ConsoleApp2\\ConsoleApp1\\ConsoleApp1.csproj",
         "packagesPath": "C:\\Users\\Tester\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Tester\\source\\repos\\ConsoleApp2\\ConsoleApp2\\obj\\",
+        "outputPath": "C:\\Users\\Tester\\source\\repos\\ConsoleApp2\\ConsoleApp1\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Tester\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -39,6 +39,36 @@
       "frameworks": {
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
+          "dependencies": {
+            "EntityFramework": {
+              "target": "Package",
+              "version": "[6.4.4, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[5.0.2, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.2, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.2, )"
+            },
+            "Npgsql": {
+              "target": "Package",
+              "version": "[5.0.2, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[5.0.2, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -82,8 +112,8 @@
           "netcoreapp3.1": {
             "targetAlias": "netcoreapp3.1",
             "projectReferences": {
-              "C:\\Users\\Tester\\source\\repos\\ConsoleApp2\\ConsoleApp2\\ConsoleApp2.csproj": {
-                "projectPath": "C:\\Users\\Tester\\source\\repos\\ConsoleApp2\\ConsoleApp2\\ConsoleApp2.csproj"
+              "C:\\Users\\Tester\\source\\repos\\ConsoleApp2\\ConsoleApp1\\ConsoleApp1.csproj": {
+                "projectPath": "C:\\Users\\Tester\\source\\repos\\ConsoleApp2\\ConsoleApp1\\ConsoleApp1.csproj"
               }
             }
           }

@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Text;
-
+﻿using Microsoft.EntityFrameworkCore;
 namespace ConsoleApp1
 {
-    public class RackContext: DbContext
+    public class RackContext : DbContext
     {
-        public RackContext(): base()
-        {
-
-        }
+        
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder.UseNpgsql("Host=localhost;Database=rack_db;Username=postgres;Password=yusuf");
+        
+        public RackContext() : base() { }
         public DbSet<Column> Columns { get; set; }
         public DbSet<Shelf> Shelfs { get; set; }
+
     }
 
-    
+
 }
