@@ -1,6 +1,7 @@
 using ConsoleApp1;
+using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
-
+using System.Collections.Generic;
 
 namespace NUnitTestProject1
 {
@@ -10,188 +11,191 @@ namespace NUnitTestProject1
 
         [SetUp]
 
-        public void Setup() { srv = new Service(); }
-        
+        public void Setup()
+        {
+
+            using (var db = new RackContext())
+            {
+                db.Database.EnsureDeleted();
+                db.Database.Migrate();
+
+                db.Add(new Column
+                {
+                    ColumnID = 1,
+                    Shelfs = new List<Shelf>
+                                    {
+                                        new Shelf{ShelfID=1,Type=100,Barcode="",Theta=0},
+                                        new Shelf{ShelfID=2,Type=200,Barcode="",Theta=0},
+                                        new Shelf{ShelfID=3,Type=200,Barcode="",Theta=0}
+                                    }
+                });
+                db.Add(new Column
+                {
+                    ColumnID = 2,
+                    Shelfs = new List<Shelf>
+                                    {
+                                        new Shelf{ShelfID=4,Type=200,Barcode="",Theta=0},
+                                        new Shelf{ShelfID=6,Type=100,Barcode="",Theta=0}
+                                    }
+                });
+                db.Add(new Column
+                {
+                    ColumnID = 3,
+                    Shelfs = new List<Shelf>
+                                    {
+                                        new Shelf{ShelfID=7,Type=100,Barcode="",Theta=0},
+                                        new Shelf{ShelfID=8,Type=200,Barcode="",Theta=0},
+                                        new Shelf{ShelfID=5,Type=200,Barcode="",Theta=0}
+                                    }
+                });
+                db.SaveChanges();
+                srv = new Service();
+            }
+        }
+
+
+
         /* SKENARIO :
-         * PutLabware1 = put labware ketika rack masih kosong 
-         * PutLabware2 = put labware ketika rack terisi sesuai test case putlabware 1 
-         * PutLabware3 = put labware ketika rack terisi sesuai test case putlabware 1 dan 2 
-         * PutLabware4 = put labware size besar ketika shelf besar terisi penuh
-         * PutLabware5 = put labware size kecil ketika shelf kecil terisi penuh shg isi ke shelf besar terakhir
-         * PutLabware6 = put labware kecil ketika seluruh rack penuh
-         * TakeLabware1 = shelf id valid, tp shelf kosong 
-         * TakeLabware2 = shelf id valid dan labware ada di shelf tsb 
-         * TakeLabware3 = shelf id tidak valid 
-         * ClearLabware1 = mengosongkan shelf, cek return 1 ketika shelf id valid dan shelf terisi 
-         * ClearLabware2 = mengosongkan shelf, cek return 1 ketika shelf id valid dan shelf kosong
-         * ClearLabware3 = mengosongkan shelf, cek nilai barcode apakah benar jadi kosong dari sebelumnya terisi 
-         * ClearLabware4 = mengosongkan shelf, namun shelf id tidak valid 
-         * **fungsi SearchEmptyShelf dan SearchLabware sudah dijalankan pada skenario PutLabware 
+         * StoreLabwareTest mengimplementasikan 3 method : GetEmptyShelfId,StoreLabware,GetLabwareShelfId
+         * 
+         * StoreLabwareTest_1 = store labware ketika rack masih kosong => [untuk plate dan trough] 
+         * StoreLabwareTest_2 = store labware ketika rack terisi sebagian (isi manual) => [untuk plate dan trough] 
+         * StoreLabwareTest_3 = store labware ketika rack masih kosong + excludeShelfIds => [untuk plate dan trough] 
+         * StoreLabwareTest_4 = store labware trough ketika shelf trough terisi penuh (penuh ditentukan dari excludeShelfIds)
+         * StoreLabwareTest_5 = store labware plate ketika shelf plate terisi penuh (penuh ditentukan dari excludeShelfIds)
+         * StoreLabwareTest_6 = store labware plate ketika seluruh shelf terisi penuh (penuh ditentukan dari excludeShelfIds)
+         * 
+         * TakeLabwareTest_1 = barcode yg dicari ketemu
+         * TakeLabwareTest_2 = barcode yg dicari tdk ketemu
+         * 
+         * ClearLabwareTest_1 = mengosongkan shelf yg sebelumnya sudah kosong
+         * ClearLabwareTest_2 = mengosongkan shelf yg sebelumnya sudah terisi  
          */
 
         [Test]
-        [TestCase(1, "AAAA1", 2)]
-        [TestCase(2, "AAAA2", 1)]
-        public void PutLabware1(int size, string barcode, int id_shelf)
+        [TestCase(200, "AAAA1", 2)]
+        [TestCase(100, "AAAA2", 1)]
+        public void StoreLabwareTest_1(int ShelfTypeId, string barcode, int id_shelf)
         {
-            srv.ClearAllLabware();
-            srv.PutLabware(size, barcode);
-            var id = srv.GetLabwareShelfId(barcode);
-            Assert.AreEqual(id_shelf, id);
+            int[] excludeShelfIds = { };
+            int emptyShelfId = srv.GetEmptyShelfId(ShelfTypeId, excludeShelfIds);
+            srv.StoreLabware(barcode, emptyShelfId);
+            int notEmptyShelfId = srv.GetLabwareShelfId(barcode);
+            Assert.AreEqual(id_shelf, notEmptyShelfId);
             
         }
 
         [Test]
-        [TestCase(1, "AAAA3", 3)]
-        [TestCase(2, "AAAA4", 6)]
-        public void PutLabware2(int size, string barcode, int id_shelf)
+        [TestCase(200, "AAAA3", 3)]
+        [TestCase(100, "AAAA4", 6)]
+        public void StoreLabwareTest_2(int ShelfTypeId, string barcode, int id_shelf)
         {
-            srv.ClearAllLabware();
-            srv.PutLabware(1, "AAAA1");
-            srv.PutLabware(2, "AAAA2");
-            srv.PutLabware(size, barcode);
-
-            var id = srv.GetLabwareShelfId(barcode);
-            Assert.AreEqual(id_shelf, id);
+            
+            int st = 200;
+            int st2 = 100;
+            int st3 = ShelfTypeId;
+            int[] excludeShelfIds = { };
+            //keisi sebagian
+            int emptyShelfId = srv.GetEmptyShelfId(st, excludeShelfIds);
+            srv.StoreLabware("AAAA1", emptyShelfId);
+            int emptyShelfId2 = srv.GetEmptyShelfId(st2, excludeShelfIds);
+            srv.StoreLabware("AAAA2", emptyShelfId2);
+            //isi baru
+            int emptyShelfId3 = srv.GetEmptyShelfId(st3, excludeShelfIds);
+            srv.StoreLabware(barcode, emptyShelfId3);
+            int notEmptyShelfId = srv.GetLabwareShelfId(barcode);
+            Assert.AreEqual(id_shelf, notEmptyShelfId);
         }
 
         [Test]
-        [TestCase(1, "AAAA5",  4)]
-        [TestCase(2, "AAAA6", 7)]
-        public void PutLabware3(int size, string barcode, int id_shelf)
+        [TestCase(200, "AAAA5",  4)]
+        [TestCase(100, "AAAA6", 7)]
+        public void StoreLabwareTest_3(int ShelfTypeId, string barcode, int id_shelf)
         {
-            srv.ClearAllLabware();
-            srv.PutLabware(1, "AAAA1");
-            srv.PutLabware(2, "AAAA2");
-            srv.PutLabware(1, "AAAA3");
-            srv.PutLabware(2, "AAAA4");
-            srv.PutLabware(size, barcode);
-
-            var id = srv.GetLabwareShelfId(barcode);
-            Assert.AreEqual(id_shelf, id);
+            int[] excludeShelfIds = { 1, 2, 3, 6 };
+            int st = ShelfTypeId;
+            int emptyShelfId = srv.GetEmptyShelfId(st, excludeShelfIds);
+            srv.StoreLabware(barcode, emptyShelfId);
+            int notEmptyShelfId = srv.GetLabwareShelfId(barcode);
+            Assert.AreEqual(id_shelf, notEmptyShelfId);
         }
 
         [Test]
-        public void PutLabware4()
+        public void StoreLabwareTest_4()
         {
-            srv.ClearAllLabware();
-            int size = 2;
-            string barcode = "AAAA6";
-            srv.IsiPenuhShelfBesar();
-            int cek = srv.PutLabware(size, barcode);
-            Assert.AreEqual(0, cek);
+            int[] excludeShelfIds = { 1,6,7 };
+            int st = 100;
+            int emptyShelfId = srv.GetEmptyShelfId(st, excludeShelfIds);
+            Assert.AreEqual(-1, emptyShelfId);
         }
 
         [Test]
-        public void PutLabware5()
+        public void StoreLabwareTest_5()
         {
-            srv.ClearAllLabware();
-            int size = 1;
-            string barcode = "AAAA6";
-            //shelf besar terakhir 
-            int id_shelf = 7;
-
-            srv.IsiPenuhShelfKecil();
-            srv.PutLabware(size, barcode);
-            var id = srv.GetLabwareShelfId(barcode);
-            Assert.AreEqual(id_shelf, id);
+            int[] excludeShelfIds = { 2,3,4,5,8 };
+            int st = 200;
+            int emptyShelfId = srv.GetEmptyShelfId(st, excludeShelfIds);
+            Assert.AreEqual(7, emptyShelfId);
         }
 
         [Test]
-        public void PutLabware6()
+        public void StoreLabwareTest_6()
         {
-            int size = 1;
-            string barcode = "AAAA6";
-
-
-            srv.IsiPenuhShelfBesar();
-            srv.IsiPenuhShelfKecil();
-
-            int cek= srv.PutLabware(size, barcode);
-            var id = srv.SearchLabware(barcode);
-            Assert.AreEqual(0, cek);
+            int[] excludeShelfIds = { 1, 2, 3, 4, 5, 6, 7, 8 };
+            int st = 200;
+            int emptyShelfId = srv.GetEmptyShelfId(st, excludeShelfIds);
+            Assert.AreEqual(-1, emptyShelfId);
         }
 
         [Test]
         
-        public void TakeLabware1()
+        public void TakeLabwareTest_1()
         {
-            srv.ClearAllLabware();
-            int shelfid = 2;
-            /* shelf id valid, labware ada 
-             */
-            srv.PutLabware(1, "AAAA1");
-
-            string returns = srv.TakeLabware(shelfid);
-            Assert.AreEqual("AAAA1", returns);
+            //store dulu
+            string barcode = "XXXX1"; 
+            srv.StoreLabware(barcode, 8);
+            //kemudian take 
+            srv.TakeLabware(barcode);
+            int shelfId = srv.GetLabwareShelfId(barcode);
+            Assert.AreEqual(-1, shelfId);
         }
 
         [Test]
-        [TestCase(1)]
-        [TestCase(2)]
-        [TestCase(3)]
-        [TestCase(4)]
-        [TestCase(5)]
-        [TestCase(6)]
-        [TestCase(7)]
-        [TestCase(8)]
-        public void TakeLabware2(int shelfid)
+        [TestCase("AAAA1")]
+        [TestCase("AAAA2")]
+        [TestCase("AAAA3")]
+        public void TakeLabwareTest_2(string barcode)
         {
-            srv.ClearAllLabware();
+            //srv.TakeLabware(barcode);
+            Assert.Throws<System.ArgumentException>(() => srv.TakeLabware(barcode));
+        }
+
+        [Test]
+        [TestCase(1,100)]
+        [TestCase(4,200)]
+        public void ClearLabwareTest_1(int shelfid,int shelfTypeId)
+        {
+            srv.ClearLabware(shelfid);
+            int[] excludeShelfIds = { 2, 3, 5, 6,7,8 };
+            int st = shelfTypeId;
+            int emptyShelfId = srv.GetEmptyShelfId(st, excludeShelfIds);
+            Assert.AreEqual(shelfid, emptyShelfId);
+        }
+
+        [Test]
+        [TestCase(1, 100)]
+        [TestCase(4, 200)]
+        public void ClearLabwareTest_2(int shelfid, int shelfTypeId)
+        {
+            //isi dulu
+            srv.StoreLabware("NNNN1",1);
+            srv.StoreLabware("NNNN2", 4);
             
-            string returns = srv.TakeLabware(shelfid);
-            Assert.Null(returns);
+            srv.ClearLabware(shelfid);
+            int[] excludeShelfIds = { 2, 3, 5, 6, 7, 8 };
+            int st = shelfTypeId;
+            int emptyShelfId = srv.GetEmptyShelfId(st, excludeShelfIds);
+            Assert.AreEqual(shelfid, emptyShelfId);
         }
-
-        [Test]
-        [TestCase(20)]
-        [TestCase(30)]
-        [TestCase(40)]
-        public void TakeLabware3(int shelfid)
-        {
-            Assert.Throws<System.ArgumentException>(() => srv.TakeLabware(shelfid));
-        }
-
-        [Test]
-        public void ClearLabware1()
-        {
-            string barcode = "AAAA1";
-            int size = 1;
-            srv.PutLabware(size, barcode);
-            var id = srv.GetLabwareShelfId(barcode);
-            
-            int balik= srv.ClearLabware(id);
-            Assert.AreEqual(1, balik);
-        }
-
-        [Test]
-        public void ClearLabware2()
-        {
-            int balik = srv.ClearLabware(1);
-            Assert.AreEqual(1, balik);
-        }
-
-        [Test]
-        public void ClearLabware3()
-        {
-            string barcode = "AAAA1";
-            int size = 1;
-            srv.PutLabware(size, barcode);
-            var id = srv.GetLabwareShelfId(barcode);
-            srv.ClearLabware(id);
-            string returns= srv.TakeLabware(id); 
-            Assert.Null(returns);
-            
-        }
-
-        [Test]
-        [TestCase (20)]
-        [TestCase (30)]
-        [TestCase (40)]
-        public void ClearLabware4(int shelfid)
-        {
-            Assert.Throws<System.ArgumentException>(() => srv.ClearLabware(shelfid));
-        }
-        
     }
 }

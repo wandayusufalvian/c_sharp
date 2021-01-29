@@ -44,10 +44,10 @@ namespace ConsoleApp1.Migrations
                     b.Property<int?>("ColumnID")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ShelfSize")
+                    b.Property<int>("Theta")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Theta")
+                    b.Property<int>("Type")
                         .HasColumnType("integer");
 
                     b.HasKey("ShelfID");

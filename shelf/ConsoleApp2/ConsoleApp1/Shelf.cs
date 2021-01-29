@@ -8,10 +8,10 @@ namespace ConsoleApp1
     {
         [Key]
         public int ShelfID { get; set; }
-        public ShelfType shelfType { get; set; }
+        public int Type { get; set; }
         public String Barcode { get; set; }
         public int Theta { get; set; }
-
+        
         //satu shelf ke satu kolom saja
         public Column column { get; set; }
     }

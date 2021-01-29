@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Tester\\source\\repos\\ConsoleApp2\\ConsoleApp1\\ConsoleApp1.csproj": {}
+    "C:\\Users\\DELL\\c_sharp\\shelf\\ConsoleApp2\\ConsoleApp1\\ConsoleApp1.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Tester\\source\\repos\\ConsoleApp2\\ConsoleApp1\\ConsoleApp1.csproj": {
+    "C:\\Users\\DELL\\c_sharp\\shelf\\ConsoleApp2\\ConsoleApp1\\ConsoleApp1.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Tester\\source\\repos\\ConsoleApp2\\ConsoleApp1\\ConsoleApp1.csproj",
+        "projectUniqueName": "C:\\Users\\DELL\\c_sharp\\shelf\\ConsoleApp2\\ConsoleApp1\\ConsoleApp1.csproj",
         "projectName": "ConsoleApp1",
-        "projectPath": "C:\\Users\\Tester\\source\\repos\\ConsoleApp2\\ConsoleApp1\\ConsoleApp1.csproj",
-        "packagesPath": "C:\\Users\\Tester\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Tester\\source\\repos\\ConsoleApp2\\ConsoleApp1\\obj\\",
+        "projectPath": "C:\\Users\\DELL\\c_sharp\\shelf\\ConsoleApp2\\ConsoleApp1\\ConsoleApp1.csproj",
+        "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\DELL\\c_sharp\\shelf\\ConsoleApp2\\ConsoleApp1\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Tester\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\DELL\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [

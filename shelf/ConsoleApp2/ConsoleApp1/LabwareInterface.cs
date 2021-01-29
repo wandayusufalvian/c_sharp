@@ -6,14 +6,14 @@ namespace ConsoleApp1
 {
     public interface LabwareInterface
     {
-        void TakeLabware(string barcode); //done
+        void TakeLabware(string barcode); 
 
-        void ClearLabware(int shelfId); //done
+        void ClearLabware(int shelfId); 
 
-        void StoreLabware(string barcode, int shelfId); //tdk pakai size?
+        void StoreLabware(string barcode, int shelfId); 
 
-        int GetLabwareShelfId(string barcode); // Returns -1 if not found //done
+        int GetLabwareShelfId(string barcode); // Returns -1 if not found 
 
-        int GetEmptyShelfId(ShelfType shelfType, int[] excludeShelfIds); // Returns -1 if not found
+        int GetEmptyShelfId(int shelfType, int[] excludeShelfIds); // Returns -1 if not found 
     }
 }
