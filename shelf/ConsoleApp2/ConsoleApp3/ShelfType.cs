@@ -17,7 +17,7 @@ namespace ConsoleApp3
     private static readonly Dictionary<int, ShelfType> Dict = new[] { Trough, Plate }.ToDictionary(e => e.Id, e => e);
 
 
-        private int _id;
+    private int _id;
 
     public int Id
     {
@@ -40,8 +40,8 @@ namespace ConsoleApp3
         
    private ShelfType()
    {
-     // required by EF
-    }
+     // required by EF ??
+   }
 
 
 

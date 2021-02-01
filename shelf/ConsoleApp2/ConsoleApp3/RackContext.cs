@@ -11,10 +11,6 @@ namespace ConsoleApp3
         public DbSet<Column> Columns { get; set; }
         public DbSet<Shelf> Shelfs { get; set; }
 
-
-
-
-
     }
 
 
