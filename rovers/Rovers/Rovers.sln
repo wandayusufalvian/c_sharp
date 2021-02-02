@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30907.101
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rovers", "Rovers\Rovers.csproj", "{3AEFB517-0CB5-43D2-A34A-6F6879F10168}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnitTestRover", "NUnitTestRover\NUnitTestRover.csproj", "{BF4745A3-E6E7-49B3-95D2-B5F4A621C422}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3AEFB517-0CB5-43D2-A34A-6F6879F10168}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3AEFB517-0CB5-43D2-A34A-6F6879F10168}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3AEFB517-0CB5-43D2-A34A-6F6879F10168}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3AEFB517-0CB5-43D2-A34A-6F6879F10168}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF4745A3-E6E7-49B3-95D2-B5F4A621C422}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF4745A3-E6E7-49B3-95D2-B5F4A621C422}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF4745A3-E6E7-49B3-95D2-B5F4A621C422}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF4745A3-E6E7-49B3-95D2-B5F4A621C422}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C57D308A-2057-4A0B-BD50-D0A816E03BB6}
+	EndGlobalSection
+EndGlobal
