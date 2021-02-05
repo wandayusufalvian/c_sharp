@@ -7,33 +7,35 @@ namespace Rovers
     {
         static void Main(string[] args)
         {
-            /*
-             * Yang Belum :
-             * - jika rover ada sisa yang banyak (pakai nilai threshold tertentu)
-             * setleah dipakai oleh satu mesin lalu ada mesin lain request maka prioritas rover ini baru kemudian rover yg dari markas 
-             * - handling jika terjadi request bersamaan 
-             * - 
-             */
-            MachineType RX = MachineType.RX;
-            MachineType Flow = MachineType.Flow;
-            MarkasRover marRover = null;
-            Service srv = new Service();
+            //Service service = new Service();
+            //int amountOfRxAJob = 2;
+            //int amountOfRxBJob = 0;
+            //int amountOfFlowAJob = 2;
 
-            marRover = new MarkasRover();
-            for (int i = 1; i <= 5; i++)
-            {
-                marRover.listRovers.Add(new Rover(i));
-            }
-            marRover.availableRover = marRover.listRovers.Count;
+            //// initialize arrayOfJobs 
+            //Job[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
 
+            //var amountOfContainerNeeded = service.calcContainerNeeded(arrayOfJobs);
 
-            int jumlahJobsRX = 50;
-            int jumlahJobsFlow = 11;
-            int roverNeededFlow = srv.calcRoverNeeded(Flow, jumlahJobsFlow, marRover);
-            int roverNeededRX=srv.calcRoverNeeded(RX, jumlahJobsRX, marRover);
-            Console.WriteLine(roverNeededRX);
-            Console.WriteLine(roverNeededFlow);
+            //Container[] arrayOfContainers = service.arrayOfContainers(amountOfContainerNeeded.Item1, amountOfContainerNeeded.Item2);
 
+            //int leftJob = service.runSimulation(arrayOfJobs, arrayOfContainers);
+            //Console.WriteLine($"Total volume needed = {amountOfFlowAJob*Job.FlowA.jobCap + amountOfRxAJob*Job.RxA.jobCap + amountOfRxBJob*Job.RxB.jobCap}");
+            //Console.WriteLine("jumlah container= " + amountOfContainerNeeded);
+            //Console.WriteLine("left job= " + leftJob);
+
+            
+            //Console.WriteLine("List Jobs :");
+            //foreach (Job j in arrayOfJobs)
+            //{
+            //    Console.WriteLine(j.name+ " : "+j.jobCap);
+            //}
+            //Console.WriteLine();
+            //Console.WriteLine("Sisa volume di tiap container :");
+            //foreach (Container c in arrayOfContainers)
+            //{
+            //    Console.WriteLine(c.name+" : "+c.availableVolume);
+            //}
         }
     }
 }
