@@ -77,7 +77,7 @@ namespace NUnitTestProject3
 
         [Test]
         [TestCaseSource("InputParameter_StoreLabwareTest_1")]
-        public void StoreLabwareTest_1(ShelfType ShelfTypeId, string barcode,int id_shelf)
+        public void StoreLabwareTest_1(ShelfType ShelfTypeId, string barcode, int id_shelf)
         {
 
             int[] excludeShelfIds = { };
@@ -197,7 +197,7 @@ namespace NUnitTestProject3
 
         [Test]
         [TestCaseSource("InputParameter_ClearLabwareTest")]
-        public void ClearLabwareTest_1(ShelfType shelfTypeId,int shelfid)
+        public void ClearLabwareTest_1(ShelfType shelfTypeId, int shelfid)
         {
             srv.ClearLabware(shelfid);
             int[] excludeShelfIds = { 2, 3, 5, 6, 7, 8 };

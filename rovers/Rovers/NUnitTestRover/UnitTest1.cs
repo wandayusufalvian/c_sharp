@@ -8,12 +8,32 @@ namespace NUnitTestRover
 {
     public class Tests
     {
-        Service service = null;
+
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            service = new Service();
+            //inisialisasi 
+            Dictionary<string, List<string>> dictOfLiquidAndMachine = new Dictionary<string, List<string>>()
+            {
+                {"A", new List<string>{"Rx"}},
+                {"B", new List<string>{"Rx","Flow"}},
+                {"C", new List<string>{"Rx","Flow"}},
+                {"D", new List<string>{"Rx","Flow"}}
+            };
+            List<int> listOfAmount = new List<int> { 2,
+                                                     2,  2,
+                                                     1, 25,
+                                                      1, 1
+                                                    };
+
+            Jobs jobs = new Jobs();
+            jobs.addJob(dictOfLiquidAndMachine, listOfAmount);
+            //jobs.printJobType();
+            Job[] arrayOfRandomJobs = jobs.createArrayOfRandomJobs();
+            jobs.printArrayOfRandomJobs();
+
+            Containers containers = new Containers();
         }
 
         [Test]
@@ -31,13 +51,16 @@ namespace NUnitTestRover
         {
             
 
-            Job[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
+            Jobs[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
 
             var amountOfContainerNeeded = service.calcContainerNeeded(arrayOfJobs);
 
             Container[] arrayOfContainers = service.arrayOfContainers(amountOfContainerNeeded.Item1, amountOfContainerNeeded.Item2);
 
             int leftJob = service.runSimulation(arrayOfJobs, arrayOfContainers);
+
+
+
             Assert.AreEqual(amountOfContainerNeeded.Item1, 0); // Container A
             Assert.AreEqual(amountOfContainerNeeded.Item2, 1); // Container B
             Assert.That(leftJob == 0, Is.True);
@@ -57,7 +80,7 @@ namespace NUnitTestRover
         {
             
 
-            Job[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
+            Jobs[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
 
             var amountOfContainerNeeded = service.calcContainerNeeded(arrayOfJobs);
 
@@ -80,7 +103,7 @@ namespace NUnitTestRover
         [TestCase(0, 44, 0)]
         public void Test3(int amountOfRxAJob, int amountOfRxBJob, int amountOfFlowAJob)
         {
-            Job[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
+            Jobs[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
 
             var amountOfContainerNeeded = service.calcContainerNeeded(arrayOfJobs);
 
@@ -111,7 +134,7 @@ namespace NUnitTestRover
         {
             
 
-            Job[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
+            Jobs[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
 
             var amountOfContainerNeeded = service.calcContainerNeeded(arrayOfJobs);
 
@@ -142,7 +165,7 @@ namespace NUnitTestRover
         {
 
 
-            Job[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
+            Jobs[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
 
             var amountOfContainerNeeded = service.calcContainerNeeded(arrayOfJobs);
 
@@ -173,7 +196,7 @@ namespace NUnitTestRover
         {
 
 
-            Job[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
+            Jobs[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
 
             var amountOfContainerNeeded = service.calcContainerNeeded(arrayOfJobs);
 
@@ -200,7 +223,7 @@ namespace NUnitTestRover
         {
             
 
-            Job[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
+            Jobs[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
 
             var amountOfContainerNeeded = service.calcContainerNeeded(arrayOfJobs);
 
@@ -226,7 +249,7 @@ namespace NUnitTestRover
         {
 
 
-            Job[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
+            Jobs[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
 
             var amountOfContainerNeeded = service.calcContainerNeeded(arrayOfJobs);
 
@@ -250,7 +273,7 @@ namespace NUnitTestRover
         [TestCase(0, 15, 11)]
         public void Test9(int amountOfRxAJob, int amountOfRxBJob, int amountOfFlowAJob)
         {
-            Job[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
+            Jobs[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
 
             var amountOfContainerNeeded = service.calcContainerNeeded(arrayOfJobs);
 
@@ -274,7 +297,7 @@ namespace NUnitTestRover
         [TestCase(0, 29, 11)]
         public void Test10(int amountOfRxAJob, int amountOfRxBJob, int amountOfFlowAJob)
         {
-            Job[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
+            Jobs[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
 
             var amountOfContainerNeeded = service.calcContainerNeeded(arrayOfJobs);
 
@@ -298,7 +321,7 @@ namespace NUnitTestRover
         [TestCase(0, 44, 11)]
         public void Test11(int amountOfRxAJob, int amountOfRxBJob, int amountOfFlowAJob)
         {
-            Job[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
+            Jobs[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
 
             var amountOfContainerNeeded = service.calcContainerNeeded(arrayOfJobs);
 
@@ -322,7 +345,7 @@ namespace NUnitTestRover
         [TestCase(12, 15, 12)]
         public void Test12(int amountOfRxAJob, int amountOfRxBJob, int amountOfFlowAJob)
         {
-            Job[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
+            Jobs[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
 
             var amountOfContainerNeeded = service.calcContainerNeeded(arrayOfJobs);
 
@@ -346,7 +369,7 @@ namespace NUnitTestRover
         [TestCase(23, 15, 15)]
         public void Test13(int amountOfRxAJob, int amountOfRxBJob, int amountOfFlowAJob)
         {
-            Job[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
+            Jobs[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
 
             var amountOfContainerNeeded = service.calcContainerNeeded(arrayOfJobs);
 
@@ -370,7 +393,7 @@ namespace NUnitTestRover
         [TestCase(23, 29, 15)]
         public void Test14(int amountOfRxAJob, int amountOfRxBJob, int amountOfFlowAJob)
         {
-            Job[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
+            Jobs[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
 
             var amountOfContainerNeeded = service.calcContainerNeeded(arrayOfJobs);
 
@@ -394,7 +417,7 @@ namespace NUnitTestRover
         [TestCase(12, 44, 12)]
         public void Test15(int amountOfRxAJob, int amountOfRxBJob, int amountOfFlowAJob)
         {
-            Job[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
+            Jobs[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
 
             var amountOfContainerNeeded = service.calcContainerNeeded(arrayOfJobs);
 
@@ -418,7 +441,7 @@ namespace NUnitTestRover
         [TestCase(23, 44, 15)]
         public void Test16(int amountOfRxAJob, int amountOfRxBJob, int amountOfFlowAJob)
         {
-            Job[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
+            Jobs[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
 
             var amountOfContainerNeeded = service.calcContainerNeeded(arrayOfJobs);
 

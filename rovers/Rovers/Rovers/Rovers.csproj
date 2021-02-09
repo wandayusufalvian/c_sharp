@@ -6,7 +6,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="obj\Properties\**" />
+    <EmbeddedResource Remove="obj\Properties\**" />
+    <None Remove="obj\Properties\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="ServiceGkJadi.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="obj\" />
   </ItemGroup>
 
 </Project>

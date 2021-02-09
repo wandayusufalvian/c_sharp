@@ -7,35 +7,53 @@ namespace Rovers
     {
         static void Main(string[] args)
         {
-            //Service service = new Service();
-            //int amountOfRxAJob = 2;
-            //int amountOfRxBJob = 0;
-            //int amountOfFlowAJob = 2;
+            //inisialisasi 
+            Dictionary<string, List<string>> dictOfLiquidAndMachine = new Dictionary<string, List<string>>()
+            {
+                {"A", new List<string>{"Rx"}},
+                {"B", new List<string>{"Rx","Flow"}},
+                {"C", new List<string>{"Rx","Flow"}},
+                {"D", new List<string>{"Rx","Flow"}}
+            };
+            List<int> listOfAmount = new List<int> { 2, 
+                                                     2,  2, 
+                                                     1, 25,
+                                                      1, 1 
+                                                    };
 
-            //// initialize arrayOfJobs 
-            //Job[] arrayOfJobs = service.arrayOfJobs(amountOfRxAJob, amountOfRxBJob, amountOfFlowAJob);
+            Jobs jobs = new Jobs();
+            jobs.addJob(dictOfLiquidAndMachine, listOfAmount);
+            //jobs.printJobType();
+            Job[] arrayOfRandomJobs = jobs.createArrayOfRandomJobs();
+            jobs.printArrayOfRandomJobs();
 
-            //var amountOfContainerNeeded = service.calcContainerNeeded(arrayOfJobs);
-
-            //Container[] arrayOfContainers = service.arrayOfContainers(amountOfContainerNeeded.Item1, amountOfContainerNeeded.Item2);
-
-            //int leftJob = service.runSimulation(arrayOfJobs, arrayOfContainers);
-            //Console.WriteLine($"Total volume needed = {amountOfFlowAJob*Job.FlowA.jobCap + amountOfRxAJob*Job.RxA.jobCap + amountOfRxBJob*Job.RxB.jobCap}");
-            //Console.WriteLine("jumlah container= " + amountOfContainerNeeded);
-            //Console.WriteLine("left job= " + leftJob);
-
+            Containers containers = new Containers();
+            Dictionary<Container,int> d = containers.calcContainerNeeded(arrayOfRandomJobs);
+            var e = d.Keys;
             
-            //Console.WriteLine("List Jobs :");
-            //foreach (Job j in arrayOfJobs)
-            //{
-            //    Console.WriteLine(j.name+ " : "+j.jobCap);
-            //}
-            //Console.WriteLine();
-            //Console.WriteLine("Sisa volume di tiap container :");
-            //foreach (Container c in arrayOfContainers)
-            //{
-            //    Console.WriteLine(c.name+" : "+c.availableVolume);
-            //}
+            foreach (Container c in e)
+            {
+                Console.WriteLine($"Key: {c.name}, Values: {d[c]}");
+            }
+
+            Console.WriteLine();
+
+            Container[] ArrayOfContainers = containers.createArrayOfContainers(d);
+            foreach (Container c in ArrayOfContainers)
+            {
+                Console.WriteLine($"{c.name} : {c.availableVolume}");
+            }
+
+            Console.WriteLine();
+            int sisa = Service.runSimulation(arrayOfRandomJobs, ArrayOfContainers);
+            Console.WriteLine("sisa job :"+sisa);
+
+            foreach (Container c in ArrayOfContainers)
+            {
+                Console.WriteLine($"{c.name} : {c.availableVolume}");
+            }
+
+
         }
     }
 }

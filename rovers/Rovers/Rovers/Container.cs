@@ -8,7 +8,7 @@ namespace Rovers
     {
 
         public const int maxCapContainer= 250;
-        public const int deadVolume= 15;
+        public const int deadVolume= 20;
 
         public int availableVolume { get; set; }
         public string name { get; set; }

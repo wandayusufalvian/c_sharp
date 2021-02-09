@@ -6,18 +6,17 @@ namespace Rovers
 {
     public class Job
     {
-        public class Enum
-        {
-            public const int jobRxA = 15;
-            public const int jobRxB = 15;
-            public const int jobFlowA = 20;
-        }
+        public string jobName;
+        public string liquidType; 
+        public int volumeCapacity;
 
-        public static readonly Job RxA = new Job() { jobCap = Enum.jobRxA, name = "RxA" };
-        public static readonly Job RxB = new Job() { jobCap = Enum.jobRxB, name = "RxB" };
-        public static readonly Job FlowA = new Job() { jobCap = Enum.jobFlowA, name = "FlowA" };
+        Dictionary<string, int> dict = new Dictionary<string, int>(){{"Rx",15}, {"Flow",20}};
         
-        public int jobCap { get; set; }
-        public string name { get; set; }
+        public Job(string liquidType, string machineType)
+        {
+            this.jobName = machineType;
+            this.liquidType = liquidType;
+            this.volumeCapacity = dict[machineType]; 
+        }
     }
 }
