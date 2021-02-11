@@ -6,17 +6,13 @@ namespace Rovers
 {
     public class Job
     {
-        public string jobName;
-        public string liquidType; 
-        public int volumeCapacity;
-
-        Dictionary<string, int> dict = new Dictionary<string, int>(){{"Rx",15}, {"Flow",20}};
+        public Machine _machineType;
+        public Liquid _liquidType; 
         
-        public Job(string liquidType, string machineType)
+        public Job(Liquid liquidType , Machine machineType)
         {
-            this.jobName = machineType;
-            this.liquidType = liquidType;
-            this.volumeCapacity = dict[machineType]; 
+            _machineType = machineType;
+            _liquidType = liquidType;
         }
     }
 }

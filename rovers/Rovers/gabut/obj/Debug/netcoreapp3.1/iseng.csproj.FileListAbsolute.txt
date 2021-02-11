@@ -1,0 +1,13 @@
+C:\Users\DELL\c_sharp\rovers\Rovers\gabut\bin\Debug\netcoreapp3.1\iseng.exe
+C:\Users\DELL\c_sharp\rovers\Rovers\gabut\bin\Debug\netcoreapp3.1\iseng.deps.json
+C:\Users\DELL\c_sharp\rovers\Rovers\gabut\bin\Debug\netcoreapp3.1\iseng.runtimeconfig.json
+C:\Users\DELL\c_sharp\rovers\Rovers\gabut\bin\Debug\netcoreapp3.1\iseng.runtimeconfig.dev.json
+C:\Users\DELL\c_sharp\rovers\Rovers\gabut\bin\Debug\netcoreapp3.1\iseng.dll
+C:\Users\DELL\c_sharp\rovers\Rovers\gabut\bin\Debug\netcoreapp3.1\iseng.pdb
+C:\Users\DELL\c_sharp\rovers\Rovers\gabut\obj\Debug\netcoreapp3.1\iseng.AssemblyInfoInputs.cache
+C:\Users\DELL\c_sharp\rovers\Rovers\gabut\obj\Debug\netcoreapp3.1\iseng.AssemblyInfo.cs
+C:\Users\DELL\c_sharp\rovers\Rovers\gabut\obj\Debug\netcoreapp3.1\iseng.csproj.CoreCompileInputs.cache
+C:\Users\DELL\c_sharp\rovers\Rovers\gabut\obj\Debug\netcoreapp3.1\iseng.dll
+C:\Users\DELL\c_sharp\rovers\Rovers\gabut\obj\Debug\netcoreapp3.1\iseng.pdb
+C:\Users\DELL\c_sharp\rovers\Rovers\gabut\obj\Debug\netcoreapp3.1\iseng.genruntimeconfig.cache
+C:\Users\DELL\c_sharp\rovers\Rovers\gabut\obj\Debug\netcoreapp3.1\iseng.csprojAssemblyReference.cache

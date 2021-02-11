@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Rovers
 {
@@ -7,51 +8,28 @@ namespace Rovers
     {
         static void Main(string[] args)
         {
-            //inisialisasi 
-            Dictionary<string, List<string>> dictOfLiquidAndMachine = new Dictionary<string, List<string>>()
-            {
-                {"A", new List<string>{"Rx"}},
-                {"B", new List<string>{"Rx","Flow"}},
-                {"C", new List<string>{"Rx","Flow"}},
-                {"D", new List<string>{"Rx","Flow"}}
+            Dictionary<Liquid, Dictionary<Machine, int>> dictOfLiquidAndMachine = new Dictionary<Liquid, Dictionary<Machine, int>>()
+            {   //initialize data for list of random jobs. 
+                {Liquid.A, new Dictionary<Machine,int>{{Machine.Rx,2},{Machine.Flo, 3}}},
+                {Liquid.B, new Dictionary<Machine,int>{{Machine.Rx, 1}}},
+                {Liquid.C, new Dictionary<Machine,int>{{Machine.Rx, 2},{ Machine.Flo, 2}}},
+                {Liquid.D, new Dictionary<Machine,int>{{Machine.Flo, 1},{Machine.MachineX, 2}}}
             };
-            List<int> listOfAmount = new List<int> { 2, 
-                                                     2,  2, 
-                                                     1, 25,
-                                                      1, 1 
-                                                    };
-
-            Jobs jobs = new Jobs();
-            jobs.addJob(dictOfLiquidAndMachine, listOfAmount);
-            //jobs.printJobType();
-            Job[] arrayOfRandomJobs = jobs.createArrayOfRandomJobs();
-            jobs.printArrayOfRandomJobs();
-
-            Containers containers = new Containers();
-            Dictionary<Container,int> d = containers.calcContainerNeeded(arrayOfRandomJobs);
-            var e = d.Keys;
             
-            foreach (Container c in e)
+            /*test array of random job*/
+            List<Job> rj = Service.createListOfRandomJobs(dictOfLiquidAndMachine);
+            //foreach (Job j in rj)
+            //{
+            //    Console.WriteLine($"{j._machineType.name} | {j._liquidType.name} | {j._machineType.liquidDose}");
+            //}
+            Dictionary<Trough, int> dotn = Service.calcTroughNeeded(rj);
+            var x = dotn.Keys; 
+            foreach(Trough t in x)
             {
-                Console.WriteLine($"Key: {c.name}, Values: {d[c]}");
+                Console.WriteLine($"{t._liquidType.name} | {t.availableVolume} | {dotn[t]}");
             }
 
-            Console.WriteLine();
-
-            Container[] ArrayOfContainers = containers.createArrayOfContainers(d);
-            foreach (Container c in ArrayOfContainers)
-            {
-                Console.WriteLine($"{c.name} : {c.availableVolume}");
-            }
-
-            Console.WriteLine();
-            int sisa = Service.runSimulation(arrayOfRandomJobs, ArrayOfContainers);
-            Console.WriteLine("sisa job :"+sisa);
-
-            foreach (Container c in ArrayOfContainers)
-            {
-                Console.WriteLine($"{c.name} : {c.availableVolume}");
-            }
+            //Console.WriteLine(Containers.calcTroughNeeded(rj));
 
 
         }
