@@ -7,6 +7,8 @@ namespace Rovers
 {
     public class Service
     {
+        //MAIN FUNCTION : 
+
         // create list of random jobs
         public static List<Job> createListOfRandomJobs(Dictionary<Liquid, Dictionary<Machine, int>> dictOfLiquidAndMachine)
         {
@@ -24,37 +26,37 @@ namespace Rovers
                     }
                 }
             }
-            return Shuffle(jobNotShuffle);
+            return ShuffleJobs(jobNotShuffle);
         }
 
         // calculate containers needed 
         public static Dictionary<Trough, int> calcTroughNeeded(List<Job> listOfRandomJobs)
         {
             Dictionary<Trough, int> dictOfTroughNeeded = new Dictionary<Trough, int>(); // {Trough,quantity of trough needed}
-            Dictionary<Liquid, int> dictLiquidAndMachineQuantity = calcMachineQuantityThatNeedEachLiquidType(listOfRandomJobs); //{Liquid,Total machine quantity}
-            List<Liquid> keys = dictLiquidAndMachineQuantity.Keys.ToList();
-            Dictionary<Liquid, int> dictLiquidAndVolumeQuantity = calcTotalVolumeNeededEachLiquidType(listOfRandomJobs, keys); //{Liquid,Total volume needed from all jobs}
-
-            //hitung trough yg dibutuhkan per liquid 
-            //sebelum ada buffer dan sebelum mempertimbangkan ada berapa mesin yg butuh 
+            Dictionary<Liquid, int> dictLiquidAndMachineQuantity = calcMachineQuantityEachLiquidType(listOfRandomJobs); //{Liquid,Total machine quantity}
+            Dictionary<Liquid, int> dictLiquidAndVolumeQuantity = calcVolumeAllJobsEachLiquidType(listOfRandomJobs); //{Liquid,Total volume needed from all jobs}
+            Dictionary<Liquid, List<Job>> dictOfLiquidAndMachineType = liquidAndMachineType(listOfRandomJobs); //{Liquid, list of machine type}
+            //calculate trough needed each liquid type 
+            var keys = dictLiquidAndMachineQuantity.Keys; 
             foreach (Liquid l in keys)
-            {
+            {   
                 int remainder;
                 int quotient = Math.DivRem(dictLiquidAndVolumeQuantity[l], Trough.initialVolume, out remainder);
                 int troughNeeded = (remainder == 0 ? quotient : quotient + 1);
-                //jika cuma 1 mesin dan cuma butuh 1 trough=>gk perlu buffer 
+                // if liquid l is needed only by 1 machine and trough needed = 1 
                 if (troughNeeded == 1 && dictLiquidAndMachineQuantity[l] == 1) { troughNeeded = 1; }
-                // jika cuma 1 mesin dan butuh > 1 trough 
-                // jika lebih dari satu mesin dan butuh >= 1 trough
-                // => butuh buffer
+                // if liquid l is needed only by 1 machine and trough needed > 1 
+                // if liquid l is needed by > 1 machine and trough needed = 1 
+                // if liquid l is needed by > 1 machine and trough needed > 1
+                // + buffer 
                 else
                 {
-                    int maxDose = Machine.getMaxDose();
-                    int buffer = troughNeeded * maxDose;
-                    int volumePlusBuffer = dictLiquidAndVolumeQuantity[l] + buffer;
+                    int maxDose = getMaxDose(dictOfLiquidAndMachineType, l); //buffer each trough 
+                    int buffer = troughNeeded * maxDose; //total buffer 
+                    int volumePlusBuffer = dictLiquidAndVolumeQuantity[l] + buffer; //recalculate total volume 
                     quotient = Math.DivRem(volumePlusBuffer, Trough.initialVolume, out remainder);
-                    troughNeeded = (remainder == 0 ? quotient : quotient + 1);
-                    //jika trough<jumlah mesin
+                    troughNeeded = (remainder == 0 ? quotient : quotient + 1); //recalculate trough needed
+                    //trough needed < amount of machine that need liquid l 
                     if (troughNeeded < dictLiquidAndMachineQuantity[l])
                     {
                         troughNeeded = dictLiquidAndMachineQuantity[l];
@@ -65,36 +67,47 @@ namespace Rovers
             return dictOfTroughNeeded;
         }
 
+        //create list of random trough 
+        public static List<Trough> createListOfRandomTrough(Dictionary<Trough, int> dictOfTroughNeeded)
+        {
+            var keys = dictOfTroughNeeded.Keys;
+            List <Trough> troughNotShuffle= new List<Trough>();
+            foreach (Trough t in keys)
+            {
+                for(int i=0;i< dictOfTroughNeeded[t]; i++)
+                {
+                    troughNotShuffle.Add(new Trough(t._liquidType)); 
+                }
+            }
+            return ShuffleTrough(troughNotShuffle);
+        }
+
         // run simulation 
+        public static int runSimulation(List<Job> listOfRandomJobs,List<Trough> listOfRandomTrough)
+        {
+            int amountOfJobLeft = listOfRandomJobs.Count; 
+            List<Trough> shuffledTrough;  
+            foreach(Job j in listOfRandomJobs)
+            {
+                shuffledTrough = ShuffleTrough(listOfRandomTrough);
+                foreach (Trough t in listOfRandomTrough)
+                {
+                    bool condition1 = (j._liquidType).Equals(t._liquidType);
+                    bool condition2 = t.availableVolume >= j._machineType.liquidDose; 
+                    if(condition1 && condition2)
+                    {
+                        amountOfJobLeft -= 1;
+                        t.availableVolume -= j._machineType.liquidDose;
+                        break;
+                    }
+                }
+            }
+            return amountOfJobLeft;
+        }
 
-        //public static int runSimulation(Job[] JobsArray, Container[] ContainerArray)
-        //{
 
-        //    int lengthOfContainer = ContainerArray.Length;
-        //    int amountOfJobLeft = JobsArray.Length;
-        //    List<int> randomList; // a list of random number for sequence of container index 
-        //    for (int i = 0; i < JobsArray.Length; i++)
-        //    {   //mengacak urutan container yg akan di-traverse
-        //        randomList = RandomListOfContainerIndex(lengthOfContainer);
-
-        //        //request container randomly 
-        //        foreach (int j in randomList)
-        //        {
-        //            bool condition1 = JobsArray[i].liquidType.Equals(ContainerArray[j].name);
-        //            bool condition2 = ContainerArray[j].availableVolume >= JobsArray[i].volumeCapacity; 
-        //            if (condition1 && condition2)
-        //            {
-        //                amountOfJobLeft -= 1;
-        //                ContainerArray[j].availableVolume -= JobsArray[i].volumeCapacity;
-        //                break; 
-        //            }
-        //        }
-        //    }
-        //    return amountOfJobLeft;
-        //}
-
-        // support functions (and also for testing purpose):
-        static List<Job> Shuffle(List<Job> list)
+        // SUPPORT FUNCTIONS :
+        static List<Job> ShuffleJobs(List<Job> list)
         {
             Random rng = new Random();
             int n = list.Count;
@@ -109,9 +122,37 @@ namespace Rovers
             }
             return list;
         }
-        static Dictionary<Liquid, int> calcMachineQuantityThatNeedEachLiquidType(List<Job> listOfRandomJobs)
+
+        static List<Trough> ShuffleTrough(List<Trough> list)
         {
-            Dictionary<Liquid, List<Job>> dictOfLiquidAndMachines = listOfRandomJobs.GroupBy(o => o._liquidType).ToDictionary(g => g.Key, g => g.ToList());
+            Random rng = new Random();
+            int n = list.Count;
+            Trough t = null;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                t = list[k];
+                list[k] = list[n];
+                list[n] = t;
+            }
+            return list;
+        }
+
+        static Dictionary<Liquid, List<Job>> liquidAndMachineType(List<Job> listOfRandomJobs)
+        {
+            Dictionary<Liquid, List<Job>> dictOfLiquidAndMachines = listOfRandomJobs.GroupBy(o => o._liquidType).ToDictionary(g => g.Key, g => g.ToList().GroupBy(x => x._machineType).Select(group => group.First()).ToList());
+            return dictOfLiquidAndMachines; 
+        }
+
+        static int getMaxDose(Dictionary<Liquid, List<Job>> dictOfLiquidAndMachineType,Liquid l)
+        {
+            return dictOfLiquidAndMachineType[l].Select(x => x._machineType.liquidDose).Max(); 
+        }
+
+        static Dictionary<Liquid, int> calcMachineQuantityEachLiquidType(List<Job> listOfRandomJobs)
+        {
+            Dictionary<Liquid, List<Job>> dictOfLiquidAndMachines = liquidAndMachineType(listOfRandomJobs);
             Dictionary<Liquid, int> dictLiquidAndMachineQuantity = new Dictionary<Liquid, int>();
             var k = dictOfLiquidAndMachines.Keys;
             foreach (Liquid l in k)
@@ -122,77 +163,58 @@ namespace Rovers
             }
             return dictLiquidAndMachineQuantity;
         }
-        static Dictionary<Liquid, int> calcTotalVolumeNeededEachLiquidType(List<Job> listOfRandomJobs, List<Liquid> keys)
+        static Dictionary<Liquid, int> calcVolumeAllJobsEachLiquidType(List<Job> listOfRandomJobs)
         {
             Dictionary<Liquid, int> dictOfTotalVolumeNeededEachLiquidType = new Dictionary<Liquid, int>();
-            foreach (Liquid l in keys) { dictOfTotalVolumeNeededEachLiquidType[l] = 0; }
-
-            foreach (Job j in listOfRandomJobs) { dictOfTotalVolumeNeededEachLiquidType[j._liquidType] += j._machineType.liquidDose; }
+           
+            foreach (Job j in listOfRandomJobs)
+            {
+                if (!dictOfTotalVolumeNeededEachLiquidType.ContainsKey(j._liquidType))
+                {
+                    dictOfTotalVolumeNeededEachLiquidType[j._liquidType] = j._machineType.liquidDose;
+                }
+                else
+                {
+                    dictOfTotalVolumeNeededEachLiquidType[j._liquidType] += j._machineType.liquidDose;
+                }
+            }
 
             return dictOfTotalVolumeNeededEachLiquidType;
         }
-        //static List<int> RandomListOfContainerIndex(int lengthOfContainer)
-        //{
-        //    List<int> randomList = new List<int>();
-        //    Random a = new Random();
-        //    int MyNumber;
 
-        //    while (randomList.Count < lengthOfContainer)
-        //    {
-        //        MyNumber = a.Next(0, lengthOfContainer);
-        //        if (!randomList.Contains(MyNumber))
-        //        {
-        //            randomList.Add(MyNumber);
-        //        }
-        //    }
-        //    return randomList;
-        //}
+        // extra FUNCTION for testing purpose : 
+        public static void printContainerLeftVolume(List<Trough> listOfRandomTrough)
+        {
+            Console.WriteLine("Left Volume: ");
+            foreach (Trough t in listOfRandomTrough)
+            {
+                Console.WriteLine($"{t._liquidType.name} : {t.availableVolume}");
+            }
+        }
 
-        //public static void printContainerLeftVolume(Container[] ArrayOfContainers)
-        //{
-        //    Console.WriteLine("Left Volume: ");
-        //    foreach (Container c in ArrayOfContainers)
-        //    {
+        public static Dictionary<Liquid, int> volumeNeededEachLiquid(List<Job> listOfRandomJobs)
+        {
+            return calcVolumeAllJobsEachLiquidType(listOfRandomJobs);
+        }
 
-        //        Console.WriteLine($"{c.name} : {c.availableVolume}");
-        //    }
-        //}
+        public static Dictionary<Liquid, int> liquidConsumedEachTrough(List<Trough> listOfRandomTrough)
+        {
+            Dictionary<Liquid, int> liquidConsumed = new Dictionary<Liquid, int>();// {jenis liquid,yg dikonsumsi diseluruh container dg jenis liquid yg sama}
+            foreach (Trough t in listOfRandomTrough)
+            {
+                int volumeConsumed = Trough.initialVolume - t.availableVolume;
+                if (!liquidConsumed.ContainsKey(t._liquidType))
+                {
 
-        //public static Dictionary<string,int> volumeNeededEachLiquid(Job[] aoj)
-        //{
-        //    Dictionary<string, int> liquidNeeded = new Dictionary<string, int>();
-        //    foreach (Job j in aoj)
-        //    {
-        //        if (!liquidNeeded.ContainsKey(j.liquidType))
-        //        {
-        //            liquidNeeded[j.liquidType] = j.volumeCapacity;
-        //        }
-        //        else
-        //        {
-        //            liquidNeeded[j.liquidType] += j.volumeCapacity; 
-        //        }
-        //    }
-        //    return liquidNeeded;
-        //}
-
-        //public static Dictionary<string, int> liquidConsumedEachContainerType(Container[] ArrayOfContainers)
-        //{
-        //    Dictionary<string, int> liquidConsumed = new Dictionary<string, int>();// {jenis liquid,yg dikonsumsi diseluruh container dg jenis liquid yg sama}
-        //    foreach (Container c in ArrayOfContainers)
-        //    {
-        //        int volumeConsumed = c.initialVolume - c.availableVolume;
-        //        if (!liquidConsumed.ContainsKey(c.name))
-        //        {
-
-        //            liquidConsumed[c.name] = volumeConsumed;
-        //        }
-        //        else
-        //        {
-        //            liquidConsumed[c.name] += volumeConsumed;
-        //        }
-        //    }
-        //    return liquidConsumed;
-        //}
+                    liquidConsumed[t._liquidType] = volumeConsumed;
+                }
+                else
+                {
+                    liquidConsumed[t._liquidType] += volumeConsumed;
+                }
+            }
+            return liquidConsumed;
+        }
 
     }
 }

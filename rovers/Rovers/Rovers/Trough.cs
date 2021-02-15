@@ -10,7 +10,7 @@ namespace Rovers
         public const int deadVolume= 20;
 
         public int availableVolume { get; set; }
-        public static int initialVolume = maxVolume - deadVolume; 
+        public static int initialVolume = maxVolume - deadVolume;
         public Liquid _liquidType { get;  }
         public Trough(Liquid liquidType)
         {
