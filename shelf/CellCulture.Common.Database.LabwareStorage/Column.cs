@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 
-namespace ConsoleApp3
+namespace CellCulture.Common.Database.LabwareStorage
 {
     public class Column
     {

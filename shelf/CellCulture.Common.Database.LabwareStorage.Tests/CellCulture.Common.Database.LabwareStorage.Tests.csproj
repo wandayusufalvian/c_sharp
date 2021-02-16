@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ConsoleApp3\ConsoleApp3.csproj" />
+    <ProjectReference Include="..\CellCulture.Common.Database.LabwareStorage\CellCulture.Common.Database.LabwareStorage.csproj" />
   </ItemGroup>
 
 </Project>

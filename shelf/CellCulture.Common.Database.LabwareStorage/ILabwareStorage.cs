@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ConsoleApp3
+namespace CellCulture.Common.Database.LabwareStorage
 {
-    public interface LabwareInterface
+    public interface ILabwareStorage
     {
-        void TakeLabware(string barcode); 
+        void TakeLabware(string barcode);
 
-        void ClearLabware(int shelfId); 
+        void ClearLabware(int shelfId);
 
-        void StoreLabware(string barcode, int shelfId); 
+        void StoreLabware(string barcode, int shelfId);
 
         int GetLabwareShelfId(string barcode); // Returns -1 if not found 
 

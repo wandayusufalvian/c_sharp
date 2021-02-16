@@ -1,8 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-
-namespace ConsoleApp3
+namespace CellCulture.Common.Database.LabwareStorage
 {
     public class Shelf
     {
@@ -11,7 +10,7 @@ namespace ConsoleApp3
         public ShelfType Type { get; set; }
         public String Barcode { get; set; }
         public int Theta { get; set; }
-        
+
         //satu shelf ke satu kolom saja
         public Column column { get; set; }
     }

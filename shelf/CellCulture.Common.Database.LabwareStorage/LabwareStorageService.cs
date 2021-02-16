@@ -2,11 +2,10 @@
 using System;
 using System.Linq;
 
-
-namespace ConsoleApp3
+namespace CellCulture.Common.Database.LabwareStorage
 {
-    public class Service : LabwareInterface
-    {   
+    public class LabwareStorageService : ILabwareStorage
+    {
         public int GetEmptyShelfId(ShelfType shelfType, int[] excludeShelfIds)
         {
             /*Goal= mencari id dari first empty shelf selain dari array excludeShelfIds
@@ -15,29 +14,29 @@ namespace ConsoleApp3
              *khusus plate, jika tidak ada shelf type plate maka search dari kolom terakhir untuk shelf type trough  
              *search dimulai dari kolom dengan id terkecil 
             */
-            using (var db = new RackContext())
-            {   
+            using (var db = new LabwareStorageContext())
+            {
                 var Laci = db.Shelfs.Include(p => p.Type).ToList();
                 //jika shelf type= Plate
-                if (shelfType.Id==200)
-                {   
-  
-                    foreach(Shelf shl in Laci)
+                if (shelfType.Id == 200)
+                {
+
+                    foreach (Shelf shl in Laci)
                     {
-                        if (excludeShelfIds.Contains(shl.ShelfID)==false && shl.Type.Id==200 && shl.Barcode.Equals(""))
+                        if (excludeShelfIds.Contains(shl.ShelfID) == false && shl.Type.Id == 200 && shl.Barcode.Equals(""))
                         {
                             int shlID = shl.ShelfID;
                             return shlID;
                         }
                     }
 
-                    
+
                     //kalau tidak ada yg plate, search yg trough di mulai dari kolom terakhir. 
                     Laci.Reverse();
 
-                    foreach(Shelf shl in Laci)
+                    foreach (Shelf shl in Laci)
                     {
-                        if(excludeShelfIds.Contains(shl.ShelfID)==false && shl.Type.Id == 100 && shl.Barcode.Equals(""))
+                        if (excludeShelfIds.Contains(shl.ShelfID) == false && shl.Type.Id == 100 && shl.Barcode.Equals(""))
                         {
                             int shlID = shl.ShelfID;
                             return shlID;
@@ -48,11 +47,11 @@ namespace ConsoleApp3
 
                 }
                 //jika shelf type = Trough
-                else if (shelfType.Id==100)
+                else if (shelfType.Id == 100)
                 {
                     foreach (Shelf shl in Laci)
                     {
-                        if (excludeShelfIds.Contains(shl.ShelfID)==false && shl.Type.Id == 100 && shl.Barcode.Equals(""))
+                        if (excludeShelfIds.Contains(shl.ShelfID) == false && shl.Type.Id == 100 && shl.Barcode.Equals(""))
                         {
                             int shlID = shl.ShelfID;
                             return shlID;
@@ -60,7 +59,7 @@ namespace ConsoleApp3
                     }
                 }
             }
-            return -1; 
+            return -1;
         }
 
         public int GetLabwareShelfId(string barcode)
@@ -70,7 +69,7 @@ namespace ConsoleApp3
              * return shelf id = jika ketemu 
              * return -1 = jika tidak ketemu 
              */
-            using (var db=new RackContext())
+            using (var db = new LabwareStorageContext())
             {
                 var Laci = db.Shelfs.ToList();
                 foreach (Shelf shl in Laci)
@@ -92,32 +91,32 @@ namespace ConsoleApp3
              * shelfId pasti valid 
              * proses cari shelf tetap iterasi karena bisa jadi shelfId nilainya tidak urut dan lompat
              */
-            using(var db=new RackContext())
+            using (var db = new LabwareStorageContext())
             {
                 var Laci = db.Shelfs.ToList();
-                foreach(Shelf shl in Laci)
+                foreach (Shelf shl in Laci)
                 {
-                    if (shl.ShelfID==shelfId)
+                    if (shl.ShelfID == shelfId)
                     {
                         shl.Barcode = barcode;
                         db.SaveChanges();
-                        break; 
+                        break;
                     }
                 }
             }
         }
 
-        public void TakeLabware(string barcode) 
+        public void TakeLabware(string barcode)
         {
             /* Goal = kosongkan shelf jika punya labware dengan barcode sesuai input
              * Asumsi = barcode valid 
              * jika barcode ada-> set shelf-nya jadi empty
              * jika barcode tdk ada-> throw exception
              */
-            using (var db = new RackContext())
+            using (var db = new LabwareStorageContext())
             {
                 var Laci = db.Shelfs.ToList();
-                int sukses = 0; 
+                int sukses = 0;
                 foreach (Shelf shl in Laci)
                 {
                     if (shl.Barcode.Equals(barcode))
@@ -140,7 +139,7 @@ namespace ConsoleApp3
             /* Goal = mengosongkan shelf, tidak perduli kondisi awal shelf kosong atau tidak.
              * Sama dengan takelabware, bedanya tdk throw exception jika kosong.
              */
-            using (var db = new RackContext())
+            using (var db = new LabwareStorageContext())
             {
 
                 var Laci = db.Shelfs.ToList();

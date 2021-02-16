@@ -1,4 +1,4 @@
-using ConsoleApp3;
+using CellCulture.Common.Database.LabwareStorage;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using System;
@@ -9,7 +9,7 @@ namespace NUnitTestProject3
 {
     public class Tests
     {
-        Service srv = null;
+        LabwareStorageService srv = null;
         Column col1 = null;
         Column col2 = null;
         Column col3 = null;
@@ -33,19 +33,22 @@ namespace NUnitTestProject3
             col1 = new Column() { ColumnID = 1, Shelfs = ListShelf1 };
             col2 = new Column() { ColumnID = 2, Shelfs = ListShelf2 };
             col3 = new Column() { ColumnID = 3, Shelfs = ListShelf3 };
-            srv = new Service();
+            srv = new LabwareStorageService();
         }
 
         [SetUp]
         public void SetUp()
         {
-            using (var db = new RackContext())
+            using (var db = new LabwareStorageContext())
             {
                 db.Database.EnsureDeleted();
-                db.Database.Migrate();
+                db.Database.EnsureCreated();
+                // db.Database.Migrate();
+
                 db.Columns.Add(col1);
                 db.Columns.Add(col2);
                 db.Columns.Add(col3);
+
                 db.SaveChanges();
             }
         }
