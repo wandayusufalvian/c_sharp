@@ -185,6 +185,7 @@ namespace Rovers
             Dictionary<Liquid, Dictionary<Machine, int>> dictOfLiquidAndMachine = new Dictionary<Liquid, Dictionary<Machine, int>>();
             foreach(Job j in listOfRandomJobs)
             {
+                // initiate first if there is no key 
                 if (!dictOfLiquidAndMachine.ContainsKey(j._liquidType))
                 {
                     dictOfLiquidAndMachine[j._liquidType] = new Dictionary<Machine, int>();
