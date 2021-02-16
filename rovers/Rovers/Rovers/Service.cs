@@ -150,18 +150,57 @@ namespace Rovers
             return dictOfLiquidAndMachineType[l].Select(x => x._machineType.liquidDose).Max(); 
         }
 
-        static Dictionary<Liquid, int> calcMachineQuantityEachLiquidType(List<Job> listOfRandomJobs)
+        public static Dictionary<Liquid, int> calcMachineQuantityEachLiquidType(List<Job> listOfRandomJobs)
         {
-            Dictionary<Liquid, List<Job>> dictOfLiquidAndMachines = liquidAndMachineType(listOfRandomJobs);
+            Dictionary<Liquid, Dictionary<Machine, int>> dictOfLiquidAndMachine = reverseListJobToDict(listOfRandomJobs);
             Dictionary<Liquid, int> dictLiquidAndMachineQuantity = new Dictionary<Liquid, int>();
-            var k = dictOfLiquidAndMachines.Keys;
+        
+            var k = dictOfLiquidAndMachine.Keys;
             foreach (Liquid l in k)
             {
+                var k2 = dictOfLiquidAndMachine[l].Keys;
                 int total = 0;
-                foreach (Job j in dictOfLiquidAndMachines[l].ToList()) { total += j._machineType.machineQuantity; }
-                dictLiquidAndMachineQuantity[l] = total;
+                foreach (Machine m in k2)
+                {   
+                    int jobsNum = dictOfLiquidAndMachine[l][m];
+                    int machineNum = m.machineQuantity;
+                    //if jobs < machine Quantity
+                    if (jobsNum < machineNum)
+                    {
+                        total += jobsNum;
+                    }
+                    else
+                    {
+                        total += machineNum; 
+                    }
+                }
+                dictLiquidAndMachineQuantity.Add(l, total);
             }
+
             return dictLiquidAndMachineQuantity;
+        }
+
+        static Dictionary<Liquid, Dictionary<Machine, int>> reverseListJobToDict(List<Job> listOfRandomJobs)
+        {
+            Dictionary<Liquid, Dictionary<Machine, int>> dictOfLiquidAndMachine = new Dictionary<Liquid, Dictionary<Machine, int>>();
+            foreach(Job j in listOfRandomJobs)
+            {
+                if (!dictOfLiquidAndMachine.ContainsKey(j._liquidType))
+                {
+                    dictOfLiquidAndMachine[j._liquidType] = new Dictionary<Machine, int>();
+                }
+                if (!dictOfLiquidAndMachine[j._liquidType].ContainsKey(j._machineType))
+                {
+                    dictOfLiquidAndMachine[j._liquidType].Add(j._machineType, 1);
+                }
+                else
+                {
+                    dictOfLiquidAndMachine[j._liquidType][j._machineType] += 1;
+                }
+            }
+
+            return dictOfLiquidAndMachine;
+
         }
         static Dictionary<Liquid, int> calcVolumeAllJobsEachLiquidType(List<Job> listOfRandomJobs)
         {

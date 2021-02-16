@@ -46,7 +46,7 @@ namespace NUnitTestRover
             //check amount of trough needed...
             List<Trough> orderedTroughKeys = dictOfTroughNeeded.Keys.OrderBy(o => o._liquidType.name).ToList();
             Assert.AreEqual(dictOfTroughNeeded[orderedTroughKeys[0]], 3); // Trough A
-            Assert.AreEqual(dictOfTroughNeeded[orderedTroughKeys[1]], 2); // Trough B
+            Assert.AreEqual(dictOfTroughNeeded[orderedTroughKeys[1]], 1); // Trough B
             Assert.AreEqual(dictOfTroughNeeded[orderedTroughKeys[2]], 3); // Trough C
             Assert.AreEqual(dictOfTroughNeeded[orderedTroughKeys[3]], 2); // Trough D
 
@@ -174,7 +174,7 @@ namespace NUnitTestRover
             Assert.AreEqual(dictOfTroughNeeded[orderedTroughKeys[0]], 1); // Trough A
             Assert.AreEqual(dictOfTroughNeeded[orderedTroughKeys[1]], 2); // Trough B
             Assert.AreEqual(dictOfTroughNeeded[orderedTroughKeys[2]], 1); // Trough C
-            Assert.AreEqual(dictOfTroughNeeded[orderedTroughKeys[3]], 5); // Trough D
+            Assert.AreEqual(dictOfTroughNeeded[orderedTroughKeys[3]], 1); // Trough D
 
             //check jobsLeft==0
             Assert.That(jobsLeft == 0, Is.True);
@@ -190,7 +190,7 @@ namespace NUnitTestRover
             Dictionary<Liquid, Dictionary<Machine, int>> dictOfLiquidAndMachine = new Dictionary<Liquid, Dictionary<Machine, int>>()
             {   //initialize data for list of random jobs. 
                 //{jenis liquid,{{jenis mesin 1,banyak job 1},{jenis mesin 2,banyak job 2},....{jenis mesin n,banyak job n}}}
-                {Liquid.A, new Dictionary<Machine,int>{ { Machine.Rx, 15 },{ Machine.Flo, 11},{Machine.MachineX, 9},{Machine.MachineY, 1}}},
+                {Liquid.A, new Dictionary<Machine,int>{ {Machine.Rx, 15 },{ Machine.Flo, 11},{Machine.MachineX, 9},{Machine.MachineY, 1}}},
                 {Liquid.B, new Dictionary<Machine,int>{{Machine.Rx, 40}}},
                 {Liquid.C, new Dictionary<Machine,int>{{Machine.MachineX, 9}}},
             };
@@ -211,7 +211,7 @@ namespace NUnitTestRover
 
             //check amount of trough needed...
             List<Trough> orderedTroughKeys = dictOfTroughNeeded.Keys.OrderBy(o => o._liquidType.name).ToList();
-            Assert.AreEqual(dictOfTroughNeeded[orderedTroughKeys[0]], 9); // Trough A
+            Assert.AreEqual(dictOfTroughNeeded[orderedTroughKeys[0]], 5); // Trough A
             Assert.AreEqual(dictOfTroughNeeded[orderedTroughKeys[1]], 3); // Trough B
             Assert.AreEqual(dictOfTroughNeeded[orderedTroughKeys[2]], 1); // Trough C
 
@@ -221,6 +221,8 @@ namespace NUnitTestRover
             //print trough volume left... 
             Service.printContainerLeftVolume(listOfRandomTroughs.OrderBy(o => o._liquidType.name).ToList());
         }
+
+
 
     }
 }
