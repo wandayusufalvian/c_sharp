@@ -221,8 +221,5 @@ namespace NUnitTestRover
             //print trough volume left... 
             Service.printContainerLeftVolume(listOfRandomTroughs.OrderBy(o => o._liquidType.name).ToList());
         }
-
-
-
     }
 }

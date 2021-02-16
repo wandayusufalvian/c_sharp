@@ -150,7 +150,7 @@ namespace Rovers
             return dictOfLiquidAndMachineType[l].Select(x => x._machineType.liquidDose).Max(); 
         }
 
-        public static Dictionary<Liquid, int> calcMachineQuantityEachLiquidType(List<Job> listOfRandomJobs)
+        static Dictionary<Liquid, int> calcMachineQuantityEachLiquidType(List<Job> listOfRandomJobs)
         {
             Dictionary<Liquid, Dictionary<Machine, int>> dictOfLiquidAndMachine = reverseListJobToDict(listOfRandomJobs);
             Dictionary<Liquid, int> dictLiquidAndMachineQuantity = new Dictionary<Liquid, int>();
