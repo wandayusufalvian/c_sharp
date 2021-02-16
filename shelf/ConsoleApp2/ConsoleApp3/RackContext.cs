@@ -5,7 +5,7 @@ namespace ConsoleApp3
     {
         
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.UseNpgsql("Host=localhost;Database=rack_db_2;Username=postgres;Password=yusuf");
+            => optionsBuilder.UseNpgsql("Host=localhost;Database=rack_db_2;Username=postgres;Password=postgres");
         
         public RackContext() : base() { }
         public DbSet<Column> Columns { get; set; }
