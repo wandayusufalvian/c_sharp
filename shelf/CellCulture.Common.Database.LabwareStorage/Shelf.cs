@@ -7,6 +7,7 @@ namespace CellCulture.Common.Database.LabwareStorage
     {
         [Key]
         public int ShelfID { get; set; }
+        public string ShelfName { get; set; }
         public ShelfType Type { get; set; }
         public String Barcode { get; set; }
         public int Theta { get; set; }

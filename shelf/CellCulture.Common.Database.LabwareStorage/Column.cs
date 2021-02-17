@@ -9,8 +9,6 @@ namespace CellCulture.Common.Database.LabwareStorage
         [Key]
         public int ColumnID { get; set; }
 
-
-        //satu kolom bisa punya banyak shelfs
         public ICollection<Shelf> Shelfs { get; set; }
 
     }
