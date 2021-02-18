@@ -7,27 +7,21 @@ namespace CellCulture.Common.Database.LabwareStorage
     public class LabwareStorageService : ILabwareStorage
     {
         private readonly object shelfLock = new object();
+
+        private IQueryable<Shelf> GetEmptyShelf(ShelfType shelfType, LabwareStorageContext db)
+        {
+            return db.Shelfs.Include(p => p.Type).Where(x => x.Type.Id == shelfType.Id && x.Barcode.Equals("")); 
+        }
         public int GetEmptyShelfId(ShelfType shelfType, int[] excludeShelfIds)
         {
             //Goal= search id from first empty shelf exclude from array excludeShelfIds
-            int shelfID = 0;
+            int shelfID = -1;
             lock (shelfLock)
-            { 
+            {
                 using (var db = new LabwareStorageContext())
-                {
-                    shelfID = (from shelf in db.Shelfs.Include(p => p.Type)
-                               where excludeShelfIds.Contains(shelf.ShelfID) == false && shelf.Type.Id == shelfType.Id && shelf.Barcode.Equals("")
-                               select shelf.ShelfID).FirstOrDefault();
-
-                    if (shelfID > 0) { return shelfID; }
-                    //If no empty shelf and shelfType is plate, search trough shelf from first shelf (plate can fit to trough shelf)
-                    else if (shelfID == 0 && shelfType.Equals(ShelfType.Plate))
-                    {
-                        shelfID = (from shelf in db.Shelfs.Include(p => p.Type)
-                                   where excludeShelfIds.Contains(shelf.ShelfID) == false && shelf.Type.Id == ShelfType.Trough.Id && shelf.Barcode.Equals("")
-                                   select shelf.ShelfID).FirstOrDefault();
-                    }
-                }  
+                {   //should put db as argument here instead using db in GetEmptyShelf method, otherwise : Object Dispose Exception
+                    shelfID = GetEmptyShelf(shelfType,db).Where(x => excludeShelfIds.Contains(x.ShelfID) == false).Select(x => x.ShelfID).FirstOrDefault();
+                }
             }
             return (shelfID > 0) ? shelfID : -1;
         }
@@ -38,26 +32,25 @@ namespace CellCulture.Common.Database.LabwareStorage
             string shelfName = "";
             lock (shelfLock)
             {
-                
                 using (var db = new LabwareStorageContext())
-                {
-
-                    shelfName = (from shelf in db.Shelfs.Include(p => p.Type)
-                                 where excludeShelfNames.Contains(shelf.ShelfName) == false && shelf.Type.Id == shelfType.Id && shelf.Barcode.Equals("")
-                                 select shelf.ShelfName).FirstOrDefault();
-
-                    if (!String.IsNullOrEmpty(shelfName)) { return shelfName; }
-                    //If no empty plate shelf, search trough shelf from first shelf (plate can fit to trough shelf)
-                    else if (String.IsNullOrEmpty(shelfName) && shelfType.Equals(ShelfType.Plate))
-                    {
-                        shelfName = (from shelf in db.Shelfs.Include(p => p.Type)
-                                     where excludeShelfNames.Contains(shelf.ShelfName) == false && shelf.Type.Id == ShelfType.Trough.Id && shelf.Barcode.Equals("")
-                                     select shelf.ShelfName).FirstOrDefault();
-                    }
-                } 
+                {   //should put db as argument here instead using db in GetEmptyShelf method, otherwise : Object Dispose Exception
+                    shelfName = GetEmptyShelf(shelfType, db).Where(x => excludeShelfNames.Contains(x.ShelfName) == false).Select(x => x.ShelfName).FirstOrDefault();
+                }
             }
             return (!String.IsNullOrEmpty(shelfName)) ? shelfName : "";
+        }
 
+        private Shelf GetLabwareShelf(string barcode)
+        {
+            Shelf shelf = null;
+            lock (shelfLock)
+            {
+                using (var db = new LabwareStorageContext())
+                {
+                    shelf = db.Shelfs.Where(x=>x.Barcode.Equals(barcode)).FirstOrDefault();
+                }
+            }
+            return (shelf != null) ? shelf : null;
         }
 
         public int GetLabwareShelfId(string barcode)
@@ -65,76 +58,70 @@ namespace CellCulture.Common.Database.LabwareStorage
             /* Goal = search shelf id based on labware's barcode 
              * Assumption = valid barcode 
              */
-            int shelfID = 0;
+            Shelf shelf = null;
             lock (shelfLock)
             {
                 using (var db = new LabwareStorageContext())
                 {
-                    shelfID = (from shelf in db.Shelfs
-                               where shelf.Barcode.Equals(barcode)
-                               select shelf.ShelfID).FirstOrDefault();
+                    shelf = GetLabwareShelf(barcode);
                 }
             }
-            return (shelfID != 0) ? shelfID : -1;
+            return (shelf != null) ? shelf.ShelfID : -1;
         }
 
         public string GetLabwareShelfName(string barcode)
         {   /* Goal = search shelf name based on labware's barcode 
              * Assumption = valid barcode 
              */
-            string shelfName = "";
+            Shelf shelf = null;
             lock (shelfLock)
             {
                 using (var db = new LabwareStorageContext())
                 {
-                    shelfName = (from shelf in db.Shelfs
-                                 where shelf.Barcode.Equals(barcode)
-                                 select shelf.ShelfName).FirstOrDefault();
+                    shelf = GetLabwareShelf(barcode);
                 }
             }
-            return (!String.IsNullOrEmpty(shelfName)) ? shelfName : "";
+            return (shelf != null) ? shelf.ShelfName : "";
+        }
+
+        private bool AnyBarcodeDuplicate(string barcode)
+        {
+            using (var db = new LabwareStorageContext())
+            {   
+                return (from shelf in db.Shelfs
+                        where shelf.Barcode == barcode
+                        select shelf.ShelfName).Any();
+            }
         }
 
         public void StoreLabware(string barcode, int shelfId)
         {
-            /* Goal = put labware in empty shelf
-             * Assumption = valid empty shelf id (got from GetEmptyShelfId)
-             */
+            // Goal = put labware in empty shelf
             lock (shelfLock)
             {
                 using (var db = new LabwareStorageContext())
-                {   //throw exception if there is duplicate barcode
-                    if ((from shelf in db.Shelfs
-                         where shelf.Barcode == barcode
-                         select shelf.ShelfName).Any()) { throw new ArgumentException(); }
-
-                (from shelf in db.Shelfs
-                 where shelf.ShelfID == shelfId
-                 select shelf).First().Barcode = barcode; db.SaveChanges();
+                {   
+                    if (!db.Shelfs.Where(x => x.ShelfID == shelfId).Any()) {throw new ArgumentException($"Shelf {shelfId} is invalid"); }
+                    if (AnyBarcodeDuplicate(barcode)) { throw new ArgumentException("There is duplicate barcode"); }
+                    db.Shelfs.Where(x => x.ShelfID == shelfId).First().Barcode = barcode;
+                    db.SaveChanges();
                 }
             }
-            
         }
 
         public void StoreLabware(string barcode, string shelfName)
         {
-            /* Goal = put labware in empty shelf
-             * Assumption = valid empty shelf name (got from GetEmptyShelfName)
-             */
+            // Goal = put labware in empty shelf
             lock (shelfLock)
             {
                 using (var db = new LabwareStorageContext())
                 {
-                    if ((from shelf in db.Shelfs
-                         where shelf.Barcode == barcode
-                         select shelf.ShelfName).Any()) { throw new ArgumentException(); }
-
-                (from shelf in db.Shelfs
-                 where shelf.ShelfName.Equals(shelfName)
-                 select shelf).First().Barcode = barcode; db.SaveChanges();
+                    if (!db.Shelfs.Where(x => x.ShelfName.Equals(shelfName)).Any()) { throw new ArgumentException($"Shelf {shelfName} is invalid"); }
+                    if (AnyBarcodeDuplicate(barcode)) { throw new ArgumentException("There is duplicate barcode"); }
+                    db.Shelfs.Where(x => x.ShelfName.Equals(shelfName)).First().Barcode = barcode;
+                    db.SaveChanges();
                 }
             }
-            
         }
         public void TakeLabware(string barcode)
         {
@@ -145,9 +132,7 @@ namespace CellCulture.Common.Database.LabwareStorage
             {
                 using (var db = new LabwareStorageContext())
                 {
-                    Shelf shlf = (from shelf in db.Shelfs
-                                  where shelf.Barcode.Equals(barcode)
-                                  select shelf).FirstOrDefault();
+                    Shelf shlf = db.Shelfs.Where(x=>x.Barcode.Equals(barcode)).FirstOrDefault();
                     if (shlf != null) { shlf.Barcode = ""; db.SaveChanges(); }
                     else { throw new ArgumentException(); }
                 }
@@ -163,9 +148,8 @@ namespace CellCulture.Common.Database.LabwareStorage
             {
                 using (var db = new LabwareStorageContext())
                 {
-                    (from shelf in db.Shelfs
-                     where shelf.ShelfID == shelfId
-                     select shelf).First().Barcode = ""; db.SaveChanges();
+                    db.Shelfs.Where(x=>x.ShelfID== shelfId).First().Barcode = ""; 
+                    db.SaveChanges();
                 }
             }
         }
@@ -178,12 +162,10 @@ namespace CellCulture.Common.Database.LabwareStorage
             {
                 using (var db = new LabwareStorageContext())
                 {
-                    (from shelf in db.Shelfs
-                     where shelf.ShelfName.Equals(shelfName)
-                     select shelf).First().Barcode = ""; db.SaveChanges();
+                    db.Shelfs.Where(x => x.ShelfName.Equals(shelfName)).First().Barcode = "";
+                    db.SaveChanges();
                 }
             }
-            
         }
     }
 }
