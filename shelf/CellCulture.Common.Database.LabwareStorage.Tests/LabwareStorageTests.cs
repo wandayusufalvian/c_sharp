@@ -238,7 +238,7 @@ namespace NUnitTestProject3
             int[] excludeShelfIds = { 2, 3, 4, 5, 8 };
             ShelfType st = ShelfType.Plate;
             int emptyShelfId = srv.GetEmptyShelfId(st, excludeShelfIds);
-            Assert.AreEqual(7, emptyShelfId);
+            Assert.AreEqual(1, emptyShelfId);
         }
 
         //TEST 5 : using shelf name
@@ -248,7 +248,7 @@ namespace NUnitTestProject3
             string[] excludeShelfNames = { "S2C1", "S3C1", "S4C2", "S5C3", "S8C3" };
             ShelfType st = ShelfType.Plate;
             string emptyShelfName = srv.GetEmptyShelfName(st, excludeShelfNames);
-            Assert.AreEqual("S7C3", emptyShelfName);
+            Assert.AreEqual("S1C1", emptyShelfName);
         }
 
         //TEST 6 : using shelf id 
