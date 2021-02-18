@@ -438,7 +438,7 @@ namespace NUnitTestProject3
         public void StoreLabwareTest_8( string barcode, int shelfId)
         {
             var exception=Assert.Throws<System.ArgumentException>(() => srv.StoreLabware(barcode, shelfId));
-            Assert.AreEqual($"Shelf {shelfId} is invalid", exception.Message);
+            Assert.AreEqual($"Invalid shelf id (id: {shelfId})", exception.Message);
 
         }
 
@@ -457,7 +457,7 @@ namespace NUnitTestProject3
         {
 
             var exception=Assert.Throws<System.ArgumentException>(() => srv.StoreLabware(barcode, shelfName));
-            Assert.AreEqual($"Shelf {shelfName} is invalid", exception.Message);
+            Assert.AreEqual($"Invalid shelf name (name: {shelfName})", exception.Message);
 
         }
     }
