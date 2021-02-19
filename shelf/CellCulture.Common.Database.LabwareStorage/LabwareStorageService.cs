@@ -204,7 +204,7 @@ namespace CellCulture.Common.Database.LabwareStorage
 
         private bool IsDuplicateFound(LabwareStorageContext db, string barcode)
         {
-            return (from shelf in db.Shelfs where shelf.Barcode == barcode select shelf.ShelfName).Any();
+            return db.Shelfs.Any(x => x.Barcode.Equals(barcode));
         }
     }
 }

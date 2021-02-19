@@ -1,7 +1,5 @@
 using CellCulture.Common.Database.LabwareStorage;
-using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -55,22 +53,22 @@ namespace NUnitTestProject3
         /* SCENARIO :
 
          * StoreLabwareTest_1 = store labware when all shelfs is empty
-         * StoreLabwareTest_2 = store labware when when partial a few shelfs is occupied  
+         * StoreLabwareTest_2 = store labware when when a few shelfs is occupied  
          * StoreLabwareTest_3 = store labware when all shelf is empty but there is excluded shelf array
-         * StoreLabwareTest_4 = store trough labware when all trough shelfs are not available
-         * StoreLabwareTest_5 = store plate labware when all plate shelfs are not available
-         * StoreLabwareTest_6 = store plate labware when all shelfs are not available
-         * StoreLabwareTest_7 = store plate labware when there is duplicate barcode and available shelf 
-         * StoreLabwareTest_8 = store invalid labware 
+         * StoreLabwareTest_4 = store labware when all shelfs with same type or all shelf(both type) are not available
+         * StoreLabwareTest_5 = store labware when there is duplicate barcode and available shelf 
+         * StoreLabwareTest_6 = store labware with invalid shelf id or name 
          * 
          * TakeLabwareTest_1 = barcode found
          * TakeLabwareTest_2 = barcode not found
          * 
          * ClearLabwareTest_1 = empty the shelf that has been emptied
          * ClearLabwareTest_2 = empty the shelf that has been occupied  
+         * ClearLAbwareTest_3 = empty the shelf with invalid shelf id or name 
          */
 
-        //TEST 1 : using shelf id 
+
+        // StoreLabwareTest_1
         public static IEnumerable InputParameter_StoreLabwareTest_1
         {
             get
@@ -81,17 +79,20 @@ namespace NUnitTestProject3
         }
         [Test]
         [TestCaseSource("InputParameter_StoreLabwareTest_1")]
-        public void StoreLabwareTest_1(ShelfType ShelfTypeId, string barcode, int id_shelf)
+        public void StoreLabwareTest_1(ShelfType ShelfType, string barcode, int id_shelf)
         {
-
+            //get empty shelf
             int[] excludeShelfIds = { };
-            int emptyShelfId = srv.GetEmptyShelfId(ShelfTypeId, excludeShelfIds);
+            int emptyShelfId = srv.GetEmptyShelfId(ShelfType, excludeShelfIds);
+
+            //store to empty shelf with valid shelf id 
             srv.StoreLabware(barcode, emptyShelfId);
+
+            //check occupied shelf
             int notEmptyShelfId = srv.GetLabwareShelfId(barcode);
             Assert.AreEqual(id_shelf, notEmptyShelfId);
         }
 
-        //TEST 1 : using shelf name
         public static IEnumerable InputParameter_StoreLabwareTest_1_2
         {
             get
@@ -104,15 +105,19 @@ namespace NUnitTestProject3
         [TestCaseSource("InputParameter_StoreLabwareTest_1_2")]
         public void StoreLabwareTest_1_2(ShelfType ShelfType, string barcode, string name_shelf)
         {
-
+            //get empty shelf
             string[] excludeShelfIds = { };
             string emptyShelfName = srv.GetEmptyShelfName(ShelfType, excludeShelfIds);
+
+            //store to empty shelf with valid name 
             srv.StoreLabware(barcode, emptyShelfName);
+
+            //check occupied shelf
             string notEmptyShelfId = srv.GetLabwareShelfName(barcode);
             Assert.AreEqual(name_shelf, notEmptyShelfId);
         }
 
-        //TEST 2 : using shelf id 
+        //StoreLabwareTest_2 
         public static IEnumerable InputParameter_StoreLabwareTest_2
         {
             get
@@ -125,23 +130,27 @@ namespace NUnitTestProject3
         [Test]
         [TestCaseSource("InputParameter_StoreLabwareTest_2")]
         public void StoreLabwareTest_2(ShelfType ShelfTypeId, string barcode, int id_shelf)
-        {
+        {   
+            //initialization
             ShelfType st = ShelfType.Plate;
             ShelfType st2 = ShelfType.Trough;
             int[] excludeShelfIds = { };
+
             //occupy some shelfs
             int emptyShelfId = srv.GetEmptyShelfId(st, excludeShelfIds);
             srv.StoreLabware("AAAA1", emptyShelfId);
             int emptyShelfId2 = srv.GetEmptyShelfId(st2, excludeShelfIds);
             srv.StoreLabware("AAAA2", emptyShelfId2);
-            //new input
+
+            //store to shelf with valid shelf id
             int emptyShelfId3 = srv.GetEmptyShelfId(ShelfTypeId, excludeShelfIds);
             srv.StoreLabware(barcode, emptyShelfId3);
+
+            //check occupied shelf
             int notEmptyShelfId = srv.GetLabwareShelfId(barcode);
             Assert.AreEqual(id_shelf, notEmptyShelfId);
         }
 
-        //TEST 2 : using shelf name 
         public static IEnumerable InputParameter_StoreLabwareTest_2_2
         {
             get
@@ -155,23 +164,27 @@ namespace NUnitTestProject3
         [TestCaseSource("InputParameter_StoreLabwareTest_2_2")]
         public void StoreLabwareTest_2_2(ShelfType ShelfType, string barcode, string name_shelf)
         {
+            //Initialization
             ShelfType st = ShelfType.Plate;
             ShelfType st2 = ShelfType.Trough;
             string[] excludeShelfNames = { };
+
             //occupy some shelfs
             string emptyShelfName = srv.GetEmptyShelfName(st, excludeShelfNames);
             srv.StoreLabware("AAAA1", emptyShelfName);
             string emptyShelfName2 = srv.GetEmptyShelfName(st2, excludeShelfNames);
             srv.StoreLabware("AAAA2", emptyShelfName2);
-            //new input
+
+            //store to shelf with valid shelf id
             string emptyShelfName3 = srv.GetEmptyShelfName(ShelfType, excludeShelfNames);
             srv.StoreLabware(barcode, emptyShelfName3);
+
+            //check occupied shelf
             string notEmptyShelfName = srv.GetLabwareShelfName(barcode);
             Assert.AreEqual(name_shelf, notEmptyShelfName);
         }
 
-
-        //TEST 3 : using shelf id 
+        //StoreLabwareTest_3
         public static IEnumerable InputParameter_StoreLabwareTest_3
         {
             get
@@ -184,15 +197,19 @@ namespace NUnitTestProject3
         [Test]
         [TestCaseSource("InputParameter_StoreLabwareTest_3")]
         public void StoreLabwareTest_3(ShelfType ShelfTypeId, string barcode, int id_shelf)
-        {
+        {   
+            //initialization 
             int[] excludeShelfIds = { 1, 2, 3, 6 };
+
+            //store to shelf with valid shelf id
             int emptyShelfId = srv.GetEmptyShelfId(ShelfTypeId, excludeShelfIds);
             srv.StoreLabware(barcode, emptyShelfId);
+
+            //check occupied shelf 
             int notEmptyShelfId = srv.GetLabwareShelfId(barcode);
             Assert.AreEqual(id_shelf, notEmptyShelfId);
         }
 
-        //TEST 3 : using shelf name
         public static IEnumerable InputParameter_StoreLabwareTest_3_2
         {
             get
@@ -206,94 +223,192 @@ namespace NUnitTestProject3
         [TestCaseSource("InputParameter_StoreLabwareTest_3_2")]
         public void StoreLabwareTest_3_2(ShelfType ShelfType, string barcode, string name_shelf)
         {
+            //initialization
             string[] excludeShelfNames = { "S1C1", "S2C1", "S3C1", "S6C2" };
+
+            //store to shelf with valid shelf name
             string emptyShelfName = srv.GetEmptyShelfName(ShelfType, excludeShelfNames);
             srv.StoreLabware(barcode, emptyShelfName);
+
+            //check occupied shelf 
             string notEmptyShelfName = srv.GetLabwareShelfName(barcode);
             Assert.AreEqual(name_shelf, notEmptyShelfName);
         }
 
-        //TEST 4 : using shelf id
-        [Test]
-        public void StoreLabwareTest_4()
+        //StoreLabwareTest_4
+        public static IEnumerable InputParameter_StoreLabwareTest_4
         {
-            int[] excludeShelfIds = { 1, 6, 7 };
-            ShelfType st = ShelfType.Trough;
-            int emptyShelfId = srv.GetEmptyShelfId(st, excludeShelfIds);
+            get
+            {
+                yield return new TestCaseData(ShelfType.Plate, new int[] { 2, 3, 4, 5, 8 });
+                yield return new TestCaseData(ShelfType.Trough,new int[] { 1, 6, 7 });
+                yield return new TestCaseData(ShelfType.Plate, new int[] { 1, 2, 3, 4, 5, 6, 7, 8 });
+                yield return new TestCaseData(ShelfType.Trough, new int[] { 1, 2, 3, 4, 5, 6, 7, 8 });
+            }
+        }
+
+        [Test]
+        [TestCaseSource("InputParameter_StoreLabwareTest_4")]
+        public void StoreLabwareTest_4(ShelfType shelfType,int[] excludeShelfIds)
+        {
+            //check no empty shelf
+            int emptyShelfId = srv.GetEmptyShelfId(shelfType, excludeShelfIds);
             Assert.AreEqual(-1, emptyShelfId);
         }
-        //TEST 4 : using shelf name
-        [Test]
-        public void StoreLabwareTest_4_2()
+        public static IEnumerable InputParameter_StoreLabwareTest_4_2
         {
-            string[] excludeShelfNames = { "S1C1", "S6C2", "S7C3" };
-            ShelfType st = ShelfType.Trough;
-            string emptyShelfName = srv.GetEmptyShelfName(st, excludeShelfNames);
+            get
+            {
+                yield return new TestCaseData(ShelfType.Plate, new string[] { "S2C1", "S3C1", "S4C2", "S5C3", "S8C3" });
+                yield return new TestCaseData(ShelfType.Trough, new string[] { "S1C1", "S6C2", "S7C3" });
+                yield return new TestCaseData(ShelfType.Plate, new string[] { "S1C1", "S2C1", "S3C1", "S4C2", "S5C3", "S6C2", "S7C3", "S8C3" });
+                yield return new TestCaseData(ShelfType.Trough, new string[] { "S1C1", "S2C1", "S3C1", "S4C2", "S5C3", "S6C2", "S7C3", "S8C3" });
+            }
+        }
+
+        [Test]
+        [TestCaseSource("InputParameter_StoreLabwareTest_4_2")]
+        public void StoreLabwareTest_4_2(ShelfType shelfType, string[] excludeShelfNames)
+        {
+            //check no empty shelf
+            string emptyShelfName = srv.GetEmptyShelfName(shelfType, excludeShelfNames);
             Assert.AreEqual("", emptyShelfName);
         }
 
-        //TEST 5 : using shelf id 
-        [Test]
-        public void StoreLabwareTest_5()
+        //StoreLabwareTest_5
+        public static IEnumerable InputParameter_StoreLabwareTest_5
         {
-            int[] excludeShelfIds = { 2, 3, 4, 5, 8 };
-            ShelfType st = ShelfType.Plate;
-            int emptyShelfId = srv.GetEmptyShelfId(st, excludeShelfIds);
-            Assert.AreEqual(-1, emptyShelfId);
+            get
+            {
+                yield return new TestCaseData(ShelfType.Plate, "AAAA5", 3);
+                yield return new TestCaseData(ShelfType.Trough, "AAAA6", 6);
+            }
+        }
+        [Test]
+        [TestCaseSource("InputParameter_StoreLabwareTest_5")]
+        public void StoreLabwareTest_5(ShelfType ShelfType, string barcode, int shelfId)
+        {
+            //initialization 
+            int[] excludeShelfIds = { };
+
+            //get first empty shelf for both type 
+            int emptyShelfName1 = srv.GetEmptyShelfId(ShelfType.Plate, excludeShelfIds);
+            int emptyShelfName2 = srv.GetEmptyShelfId(ShelfType.Trough, excludeShelfIds);
+
+            //add labware with the same barcode with InputParameter_StoreLabwareTest_5
+            srv.StoreLabware("AAAA5", emptyShelfName1);
+            srv.StoreLabware("AAAA6", emptyShelfName2);
+
+            //get second empty shelf 
+            int emptyShelfId = srv.GetEmptyShelfId(ShelfType, excludeShelfIds);
+
+            //make sure the shelf id in InputParameter_StoreLabwareTest_5 is empty shelf
+            Assert.AreEqual(shelfId, emptyShelfId);
+
+            // throw exception because even there is empty shelf, the barcode is duplicated in other shelf
+            var exception = Assert.Throws<System.ArgumentException>(() => srv.StoreLabware(barcode, emptyShelfId));
+            Assert.AreEqual($"Duplicate barcode (barcode: {barcode})", exception.Message);
+
         }
 
-        //TEST 5 : using shelf name
-        [Test]
-        public void StoreLabwareTest_5_2()
+        public static IEnumerable InputParameter_StoreLabwareTest_5_2
         {
-            string[] excludeShelfNames = { "S2C1", "S3C1", "S4C2", "S5C3", "S8C3" };
-            ShelfType st = ShelfType.Plate;
-            string emptyShelfName = srv.GetEmptyShelfName(st, excludeShelfNames);
-            Assert.AreEqual("", emptyShelfName);
+            get
+            {
+                yield return new TestCaseData(ShelfType.Plate, "AAAA5", "S3C1");
+                yield return new TestCaseData(ShelfType.Trough, "AAAA6", "S6C2");
+            }
+        }
+        [Test]
+        [TestCaseSource("InputParameter_StoreLabwareTest_5_2")]
+        public void StoreLabwareTest_5_2(ShelfType ShelfType, string barcode, string shelfName)
+        {
+            //initialization 
+            string[] excludeShelfNames = { };
+
+            //get first empty shelf for both type 
+            string emptyShelfName1 = srv.GetEmptyShelfName(ShelfType.Plate, excludeShelfNames);
+            string emptyShelfName2 = srv.GetEmptyShelfName(ShelfType.Trough, excludeShelfNames);
+
+            //add labware with the same barcode with InputParameter_StoreLabwareTest_5_2
+            srv.StoreLabware("AAAA5", emptyShelfName1);
+            srv.StoreLabware("AAAA6", emptyShelfName2);
+
+            //get second empty shelf 
+            string emptyShelfName = srv.GetEmptyShelfName(ShelfType, excludeShelfNames);
+
+            //make sure the shelf name in InputParameter_StoreLabwareTest_5_2 is empty shelf
+            Assert.AreEqual(shelfName, emptyShelfName);
+
+            // throw exception because even there is empty shelf, the barcode is duplicated in other shelf
+            var exception = Assert.Throws<System.ArgumentException>(() => srv.StoreLabware(barcode, shelfName));
+            Assert.AreEqual($"Duplicate barcode (barcode: {barcode})", exception.Message);
+
         }
 
-        //TEST 6 : using shelf id 
-        [Test]
-        public void StoreLabwareTest_6()
+        //StoreLabwareTest_6
+        public static IEnumerable InputParameter_StoreLabwareTest_6
         {
-            int[] excludeShelfIds = { 1, 2, 3, 4, 5, 6, 7, 8 };
-            ShelfType st = ShelfType.Plate;
-            int emptyShelfId = srv.GetEmptyShelfId(st, excludeShelfIds);
-            Assert.AreEqual(-1, emptyShelfId);
+            get
+            {
+                yield return new TestCaseData("AAAA5", 30);
+                yield return new TestCaseData("AAAA6", 60);
+            }
+        }
+        [Test]
+        [TestCaseSource("InputParameter_StoreLabwareTest_6")]
+        public void StoreLabwareTest_6(string barcode, int shelfId)
+        {
+            var exception = Assert.Throws<System.ArgumentException>(() => srv.StoreLabware(barcode, shelfId));
+            Assert.AreEqual($"Invalid shelf id (id: {shelfId})", exception.Message);
         }
 
-        //TEST 6 : using shelf name
-        [Test]
-        public void StoreLabwareTest_6_2()
+        public static IEnumerable InputParameter_StoreLabwareTest_6_2
         {
-            string[] excludeShelfNames = { "S1C1", "S2C1", "S3C1", "S4C2", "S5C3", "S6C2", "S7C3", "S8C3" };
-            ShelfType st = ShelfType.Plate;
-            string emptyShelfName = srv.GetEmptyShelfName(st, excludeShelfNames);
-            Assert.AreEqual("", emptyShelfName);
+            get
+            {
+                yield return new TestCaseData("AAAA5", "S3C11");
+                yield return new TestCaseData("AAAA6", "S6C21");
+            }
+        }
+        [Test]
+        [TestCaseSource("InputParameter_StoreLabwareTest_6_2")]
+        public void StoreLabwareTest_6_2(string barcode, string shelfName)
+        {
+
+            var exception = Assert.Throws<System.ArgumentException>(() => srv.StoreLabware(barcode, shelfName));
+            Assert.AreEqual($"Invalid shelf name (name: {shelfName})", exception.Message);
+
         }
 
-        //TEST 7 : using shelf id 
+        //TakeLabwareTest_1 
         [Test]
         public void TakeLabwareTest_1()
         {
+            //store and then take at the same shelf
             string barcode = "XXXX1";
             srv.StoreLabware(barcode, 8);
             srv.TakeLabware(barcode);
+
+            //check whether empty or not. If empty then takelabware works
             int shelfId = srv.GetLabwareShelfId(barcode);
             Assert.AreEqual(-1, shelfId);
         }
-        //TEST 7 : using shelf name 
+  
         [Test]
         public void TakeLabwareTest_1_2()
         {
+            //store and then take at the same shelf
             string barcode = "XXXX1";
             srv.StoreLabware(barcode, "S8C3");
             srv.TakeLabware(barcode);
+
+            //check whether empty or not. If empty then takelabware works
             string shelfName = srv.GetLabwareShelfName(barcode);
             Assert.AreEqual("", shelfName);
         }
 
-        //TEST 8  
+        //TakeLabwareTest_2
         [Test]
         [TestCase("AAAA1")]
         [TestCase("AAAA2")]
@@ -303,8 +418,8 @@ namespace NUnitTestProject3
             Assert.Throws<System.ArgumentException>(() => srv.TakeLabware(barcode));
         }
 
-        //TEST 9 : using shelf id
-        public static IEnumerable InputParameter_ClearLabwareTest
+        //ClearLabwareTest_1
+        public static IEnumerable InputParameter_ClearLabwareTest_1
         {
             get
             {
@@ -314,17 +429,19 @@ namespace NUnitTestProject3
         }
 
         [Test]
-        [TestCaseSource("InputParameter_ClearLabwareTest")]
+        [TestCaseSource("InputParameter_ClearLabwareTest_1")]
         public void ClearLabwareTest_1(ShelfType shelfTypeId, int shelfid)
         {
             srv.ClearLabware(shelfid);
+
             int[] excludeShelfIds = { 2, 3, 5, 6, 7, 8 };
+
             int emptyShelfId = srv.GetEmptyShelfId(shelfTypeId, excludeShelfIds);
+
             Assert.AreEqual(shelfid, emptyShelfId);
         }
 
-        //TEST 9 : using shelf name
-        public static IEnumerable InputParameter_ClearLabwareTest_2
+        public static IEnumerable InputParameter_ClearLabwareTest_1_2
         {
             get 
             {
@@ -334,131 +451,89 @@ namespace NUnitTestProject3
         }
 
         [Test]
-        [TestCaseSource("InputParameter_ClearLabwareTest_2")]
+        [TestCaseSource("InputParameter_ClearLabwareTest_1_2")]
         public void ClearLabwareTest_1_2(ShelfType shelfType, string shelfName)
         {
             srv.ClearLabware(shelfName);
+
             string[] excludeShelfNames = { "S2C1", "S3C1", "S5C3", "S6C2", "S7C3", "S8C3" };
+
             string emptyShelfName = srv.GetEmptyShelfName(shelfType, excludeShelfNames);
+
             Assert.AreEqual(shelfName, emptyShelfName);
         }
 
-        //TEST 10 : using shelf id
+        //ClearLabwareTest_2
         [Test]
-        [TestCaseSource("InputParameter_ClearLabwareTest")]
+        [TestCaseSource("InputParameter_ClearLabwareTest_1")]
         public void ClearLabwareTest_2(ShelfType shelfTypeId, int shelfid)
-        {
+        {   
+            //initialization
+            int[] excludeShelfIds = { 2, 3, 5, 6, 7, 8 };
+
             //occupy some shelfs
             srv.StoreLabware("NNNN1", 1);
             srv.StoreLabware("NNNN2", 4);
+
             srv.ClearLabware(shelfid);
-            int[] excludeShelfIds = { 2, 3, 5, 6, 7, 8 };
+
             int emptyShelfId = srv.GetEmptyShelfId(shelfTypeId, excludeShelfIds);
+
             Assert.AreEqual(shelfid, emptyShelfId);
         }
 
-        //TEST 10 : using shelf name
         [Test]
-        [TestCaseSource("InputParameter_ClearLabwareTest_2")]
+        [TestCaseSource("InputParameter_ClearLabwareTest_1_2")]
         public void ClearLabwareTest_2_2(ShelfType shelfTypeId, string shelfName)
         {
+            //initialization 
+            string[] excludeShelfNames = { "S2C1", "S3C1", "S5C3", "S6C2", "S7C3", "S8C3" };
+
+            //occupy some shelfs
             srv.StoreLabware("NNNN1", 1);
             srv.StoreLabware("NNNN2", 4);
+
             srv.ClearLabware(shelfName);
-            string[] excludeShelfNames = { "S2C1", "S3C1", "S5C3", "S6C2", "S7C3", "S8C3" };
+            
             string emptyShelfName = srv.GetEmptyShelfName(shelfTypeId, excludeShelfNames);
+
             Assert.AreEqual(shelfName, emptyShelfName);
         }
 
-        //TEST 11 : using shelf id
-        public static IEnumerable InputParameter_StoreLabwareTest_7
+        //ClearLabwareTest_3
+        public static IEnumerable InputParameter_ClearLabwareTest_3
         {
             get
             {
-                yield return new TestCaseData(ShelfType.Plate, "AAAA5", 3);
-                yield return new TestCaseData(ShelfType.Trough, "AAAA6", 6);
+                yield return new TestCaseData(40);
+                yield return new TestCaseData(10);
             }
         }
-        [Test]
-        [TestCaseSource("InputParameter_StoreLabwareTest_7")]
-        public void StoreLabwareTest_7(ShelfType ShelfType, string barcode, int shelfId)
-        {
-            int[] excludeShelfIds = { };
-            int emptyShelfName1 = srv.GetEmptyShelfId(ShelfType.Plate, excludeShelfIds);
-            int emptyShelfName2 = srv.GetEmptyShelfId(ShelfType.Trough, excludeShelfIds);
-            //add labware with the same barcode 
-            srv.StoreLabware("AAAA5", emptyShelfName1);
-            srv.StoreLabware("AAAA6", emptyShelfName2);
-            int emptyShelfId = srv.GetEmptyShelfId(ShelfType, excludeShelfIds);
-            //make sure there is empty shelf
-            Assert.AreEqual(shelfId, emptyShelfId);
-            // throw exception because even there is empty shelf, ther barcode is duplicated
-            Assert.Throws<System.ArgumentException>(() => srv.StoreLabware(barcode, emptyShelfId));
 
+        [Test]
+        [TestCaseSource("InputParameter_ClearLabwareTest_3")]
+        public void ClearLabwareTest_3(int shelfid)
+        {
+            var exception = Assert.Throws<System.ArgumentException>(() => srv.ClearLabware(shelfid));
+            Assert.AreEqual($"Invalid shelf id (id: { shelfid})", exception.Message);
         }
 
-        //TEST 11 : using shelf name
-        public static IEnumerable InputParameter_StoreLabwareTest_7_2
+        public static IEnumerable InputParameter_ClearLabwareTest_3_2
         {
             get
             {
-                yield return new TestCaseData(ShelfType.Plate, "AAAA5", "S3C1");
-                yield return new TestCaseData(ShelfType.Trough, "AAAA6", "S6C2");
+                yield return new TestCaseData(ShelfType.Plate, "S4L2");
+                yield return new TestCaseData(ShelfType.Trough, "S1L1");
             }
         }
+
         [Test]
-        [TestCaseSource("InputParameter_StoreLabwareTest_7_2")]
-        public void StoreLabwareTest_7_2(ShelfType ShelfType, string barcode,string shelfName)
+        [TestCaseSource("InputParameter_ClearLabwareTest_3_2")]
+        public void ClearLabwareTest_3_2(ShelfType shelfType, string shelfName)
         {
-            string[] excludeShelfNames = {};
-            string emptyShelfName1 = srv.GetEmptyShelfName(ShelfType.Plate, excludeShelfNames);
-            string emptyShelfName2 = srv.GetEmptyShelfName(ShelfType.Trough, excludeShelfNames);
-            //add labware with the same barcode 
-            srv.StoreLabware("AAAA5", emptyShelfName1);
-            srv.StoreLabware("AAAA6", emptyShelfName2);
-            string emptyShelfName = srv.GetEmptyShelfName(ShelfType, excludeShelfNames);
-            //make sure there is empty shelf
-            Assert.AreEqual(shelfName, emptyShelfName);
-            // throw exception because even there is empty shelf, ther barcode is duplicated
-            Assert.Throws<System.ArgumentException>(() => srv.StoreLabware(barcode, emptyShelfName));
-
-        }
-
-        //TEST 12 : using shelf id
-        public static IEnumerable InputParameter_StoreLabwareTest_8
-        {
-            get
-            {
-                yield return new TestCaseData( "AAAA5", 30);
-                yield return new TestCaseData("AAAA6", 60);
-            }
-        }
-        [Test]
-        [TestCaseSource("InputParameter_StoreLabwareTest_8")]
-        public void StoreLabwareTest_8( string barcode, int shelfId)
-        {
-            var exception=Assert.Throws<System.ArgumentException>(() => srv.StoreLabware(barcode, shelfId));
-            Assert.AreEqual($"Invalid shelf id (id: {shelfId})", exception.Message);
-
-        }
-
-        //TEST 12 : using shelf name
-        public static IEnumerable InputParameter_StoreLabwareTest_8_2
-        {
-            get
-            {
-                yield return new TestCaseData( "AAAA5", "S3C11");
-                yield return new TestCaseData("AAAA6", "S6C21");
-            }
-        }
-        [Test]
-        [TestCaseSource("InputParameter_StoreLabwareTest_8_2")]
-        public void StoreLabwareTest_8_2(string barcode, string shelfName)
-        {
-
-            var exception=Assert.Throws<System.ArgumentException>(() => srv.StoreLabware(barcode, shelfName));
+            var exception = Assert.Throws<System.ArgumentException>(() => srv.ClearLabware(shelfName));
             Assert.AreEqual($"Invalid shelf name (name: {shelfName})", exception.Message);
-
         }
+
     }
 }
