@@ -7,8 +7,8 @@ namespace CellCulture.Common.Database.LabwareStorage
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql("Host=localhost;Database=labware-storage;Username=postgres;Password=yusuf",
-                    options => options.SetPostgresVersion(new Version(13, 1)));
+            optionsBuilder.UseNpgsql("Host=localhost;Database=labware-storage;Username=postgres;Password=postgres",
+                    options => options.SetPostgresVersion(new Version(9, 6)));
         }
 
         public DbSet<Column> Columns { get; set; }
