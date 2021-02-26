@@ -1,0 +1,35 @@
+﻿
+===========CouchDB============= 
+Data Quantity = 86400
+Size = 22.6 MB
+Write Time = 6986 s (1.94 h => 2 h) 
+Read data =
+	=>24 jam : 16 s
+	=>12 jam : 10 s
+	=>4 jam : 4 s
+	=>1 jam : 2.1 s
+Note = 
+-for writing using MyCouch Driver 
+-for querying using couchDB query + HTTP req/res manually 
+because MyCouch documentation is not clear compare to couchDB documentation(especially for querying)
+- CouchDB Implementation Language = Erlang
+
+
+===========RavenDB=============
+Data Quantity = 86400
+Size = 270 MB (data=80 MB, the rest is buffer)
+Write Time = 95 s
+Read data =
+	=>24 jam : 16 s
+	=>12 jam : 10 s
+	=>4 jam : 4 s
+	=>1 jam : 2.1 s
+Note =
+- "developer license, not for production use"
+- RavenDB Implementation Language = C#
+
+
+
+
+
+
