@@ -20,7 +20,8 @@ namespace timeseries
             //await Experiment.Experiment3(client, 3600);//(client object,how many data retrieved)
 
             //ravenDB
-            Experiment.Experiment4();
+            //Experiment.Experiment4();
+            Experiment.Experiment5(1);
 
 
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MyCouch;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
+using System.Linq;
 
 namespace timeseries
 {
@@ -76,16 +77,28 @@ namespace timeseries
             Console.WriteLine($"Execution Time: {watch.ElapsedMilliseconds} ms");
         }
 
-        public static void Experiment5()
+        public static void Experiment5(int dataQuantity)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
-            using (IDocumentStore session = DocumentStoreHolder.Store)
-            {
 
+            using (IDocumentSession session = DocumentStoreHolderRaven.Store.OpenSession())
+            {
+                var lisfOfSensorData = session
+                                    .Query<SensorData>()
+                                    .Select(x => x.sensorData)
+                                    .Take(dataQuantity);
+                watch.Stop();
+                //int j = 1;
+                //foreach (var i in lisfOfSensorData)
+                //{
+                //    Console.WriteLine(j);
+                //    Console.WriteLine(i);
+                //    j += 1;
+                //}
             }
 
-            watch.Stop();
+
             Console.WriteLine($"Execution Time: {watch.ElapsedMilliseconds} ms");
         }
     }

@@ -4,6 +4,7 @@ using System.Text;
 using MyCouch;
 using System.Net.Http;
 using Raven.Client.Documents.Session;
+using Raven.Client.Documents;
 
 namespace timeseries
 {
@@ -77,7 +78,7 @@ namespace timeseries
 
         public static void CreateDocuments3(List<int> period, int sensorQuantity)
         {
-            using (IDocumentSession session = DocumentStoreHolder.Store.OpenSession())
+            using (IDocumentSession session = DocumentStoreHolderRaven.Store.OpenSession())
             {
                 for (int d = 0; d <= period[0]; d++)
                 {
@@ -99,7 +100,6 @@ namespace timeseries
                                     sensordata.sensorData.Add(newRandom);
                                 }
                                 session.Store(sensordata);
-                                
                             }
                         }
                     }
@@ -131,6 +131,8 @@ namespace timeseries
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
             return client;
         }
+
+        
 
 
     }
