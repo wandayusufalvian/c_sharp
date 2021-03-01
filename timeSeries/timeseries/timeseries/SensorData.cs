@@ -4,7 +4,7 @@ using System.Text;
 
 namespace timeseries
 {
-    class SensorData
+    public class SensorData
     {
         public DateTime datetime { get; set; }
         public List<double> sensorData{ get; set; }

@@ -1,5 +1,21 @@
-﻿
-===========CouchDB============= 
+﻿Summary :
+*So far only find 2 NoSQL that support installation in RPi 3 (32 bit) => RavenDB and CouchDB
+*prefer RavenDB than CouchDB because :
+	- no significance difference in read time 
+	- much faster write time 
+	- easier to query (using LinQ)
+	- If disk usage is not a concern (RavenDB use much more disk than CouchDB)
+
+===========COUCHDB============= 
+>>NOTE ON COUCHDB
+-for writing using MyCouch Driver 
+-for querying using couchDB query + HTTP req/res manually 
+because MyCouch documentation is not clear compare to couchDB documentation(especially for querying)
+-CouchDB Implementation Language = Erlang
+-Querying using MapReduce function. see here : https://docs.couchdb.org/en/stable/ddocs/views/nosql.html#mapreduce-function
+-Still not yet find convenient query solution to get sensor data only from http response (it includes metadata)
+ 
+>>EXPERIMENT 1 (24 hours with interval = 1 s)
 Data Quantity = 86400
 Size = 22.6 MB
 Write Time = 6986 s (1.94 h => 2 h) 
@@ -9,33 +25,79 @@ Read data =
 	=>4 jam : 4 s
 	=>1 jam : 2.1 s
 
-Note = 
--for writing using MyCouch Driver 
--for querying using couchDB query + HTTP req/res manually 
-because MyCouch documentation is not clear compare to couchDB documentation(especially for querying)
--CouchDB Implementation Language = Erlang
--Querying using MapReduce function. see here : https://docs.couchdb.org/en/stable/ddocs/views/nosql.html#mapreduce-functions
-
-
-===========RavenDB=============
-Data Quantity = 86400
-Size = 270 MB (data=80 MB, the rest is buffer)
-Write Time = 95 s
+>>EXPERIMENT 2 (24 hours with interval = 5 s)
+Data Quantity = 17280
+Size = 4.5 MB
+Write Time = 1820 s (30 minutes) 
 Read data =
-	=>24 jam : 15 s
-	=>12 jam : 15 s
-	=>4 jam : 15 s
-	=>1 jam : 12 s
-	=>1 s: 15 s (using Take(1))
-	=>1 s: 2 s (using First())
-Note =
+	=>24 jam : 3.7 s
+	=>12 jam : 2 s
+	=>4 jam : 0.7 s
+	=>1 jam : 0.3 s
+
+>>EXPERIMENT 3 (24 hours with interval = 10 s)
+Data Quantity = 86400
+Size = 2.3 MB
+Write Time = 8641 s (17 minutes) 
+Read data =
+	=>24 jam : 2.5 s
+	=>12 jam : 1.7 s
+	=>4 jam : 0.4 s
+	=>1 jam : 0.3 s
+
+
+===========RAVENDB=============
+>>NOTES ON RAVENDB 
 - "developer license, not for production use"
 - RavenDB Implementation Language = C#
 - Querying using LinQ
-- Take() behave strangely, will check later
+
+>>EXPERIMENT 1
+Data Quantity = 86400 (24 hours with interval = 1 s)
+Size = 81.37 MB
+Write Time = 95 s
+Read data =
+	=>24 jam : 15 s
+	=>12 jam : 9 s
+	=>4 jam : 3.8 s
+	=>1 jam : 1.9 s
+
+>>EXPERIMENT 2 
+Data Quantity = 17280 (24 hours with interval = 5 s)
+Size = 71.62 MB
+Write Time = 15 s
+Read data =
+	=>24 jam : 4 s
+	=>12 jam : 2.9 s
+	=>4 jam : 1.7 s
+	=>1 jam : 1.1 s
+
+>>EXPERIMENT 3 
+Data Quantity = 8641 (24 hours with interval = 10 s)
+Size = 53.62 MB
+Write Time = 10 s
+Read data =
+	=>24 jam : 2.8 s
+	=>12 jam : 1.8 s
+	=>4 jam : 1.3 s
+	=>1 jam : 1 s
 
 
+========OTHER NoSQL=========
 
+>> RethinkDB 
+https://github.com/rethinkdb/rethinkdb/issues/6449
+"RethinkDB is impossible to use on a Raspberry Pi 3"
 
+>> MongoDB
+https://stackoverflow.com/questions/51811140/how-to-install-mongodb-on-windows-7-32-bit
+"Changed in version 3.4: MongoDB no longer supports 32-bit x86 platforms."
+.Net driver for mongoDB is not support older version of MongoDB
 
+>>CocroachDB
+https://github.com/cockroachdb/cockroach/issues/32147#issuecomment-438055230
+"We don't currently support 32-bit architectures"
+
+>>ArangoDB,Cassandra, OrientDB
+so far, there is no clear evidence these DB can be installed in Raspberry 3 (32 bit)
 
