@@ -1,0 +1,5 @@
+﻿SUMMARY
+>> when return too many document (86400 docs), rpi freeze sometimes (happen both in RavenDB and CouchDB)
+>> can't do calculation in RavenDB query to skip datetime using mod operation. There is another way => create index, 
+using mod operation result as one of the index. will try later. 
+>> 

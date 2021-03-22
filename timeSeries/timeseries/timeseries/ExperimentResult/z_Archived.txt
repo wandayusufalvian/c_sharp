@@ -1,0 +1,55 @@
+﻿        //COUCHDB
+        //=====EXPERIMENT 1=======
+        //List<int> period = new List<int> { 0, 23, 59, 59 };
+        //int sensorQuantity = 5;
+        //int interval = 1;
+        //Services.WriteDataCouchDB(period, sensorQuantity, interval);
+
+        //=====EXPERIMENT 2=======
+        //List<int> period = new List<int> { 0, 23, 59, 59 };
+        //int sensorQuantity = 5;
+        //int interval = 5;
+        //Services.WriteDataCouchDB(period, sensorQuantity, interval);
+        //await Services.QueryingCouchDB(Services.ConnectToCouchDB(), 720);
+
+        //=====EXPERIMENT 3=======
+        //List<int> period = new List<int> { 0, 23, 59, 59 };
+        //int sensorQuantity = 5;
+        //int interval = 10;
+        //Services.WriteDataCouchDB(period, sensorQuantity, interval);
+        //await Services.QueryingCouchDB(Services.ConnectToCouchDB(), 1440);
+
+
+        //RAVENDB
+
+        //=====EXPERIMENT 2=======
+        //WRITE 
+        //List<int> period = new List<int> { 0, 23, 59, 59 };
+        //int sensorQuantity = 5;
+        //int interval = 5;
+        ////Services.WriteDataRavenDB(period, sensorQuantity, interval);
+
+        ////RETRIEVE ALL DOCS (as a list)
+        //Services.RetrieveAllDocsRavenDB(84600);
+
+        //=====EXPERIMENT 3=======
+        //List<int> period = new List<int> { 0, 23, 59, 59 };
+        //int sensorQuantity = 5;
+        //int interval = 10;
+        //Services.WriteDataRavenDB(period, sensorQuantity, interval);
+
+        //RETRIEVE ALL DOCS (as a list)
+        //Services.RetrieveAllDocsRavenDB(360);
+        //DateTime start = new DateTime(2021, 1, 1, 0, 0, 0);
+        //DateTime end = new DateTime(2021, 1, 1, 0, 1, 10);
+        //Services.RetrieveDataIntervalTime(start, end);
+        Services.RetrieveDataIntervalStep();
+            //TimeSpan elapsedSpan = new TimeSpan(end.Ticks - start.Ticks);
+            //Console.WriteLine(elapsedSpan.TotalSeconds);
+            //Console.WriteLine(DateTime.Compare(end,start));
+
+            //using (IDocumentSession session = DocumentStoreHolderRaven.Store.OpenSession())
+            //{
+
+            //}
+            //Console.WriteLine((new TimeSpan((new DateTime(2021, 1, 1, 0, 1, 1)).Ticks - (new DateTime(2021, 1, 1, 0, 0, 0)).Ticks)).TotalSeconds);

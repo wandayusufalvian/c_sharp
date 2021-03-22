@@ -9,54 +9,23 @@ using Raven.Client;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
 using System.Linq;
+using timeseries.Services;
 
 namespace timeseries
 {
     class Program
     {
-        static async Task Main(string[] args)
+        static void Main()
         {
-            //COUCHDB
-            //=====EXPERIMENT 1=======
-            //List<int> period = new List<int> { 0, 23, 59, 59 };
-            //int sensorQuantity = 5;
-            //int interval = 1;
-            //Services.WriteDataCouchDB(period, sensorQuantity, interval);
+            var watch = System.Diagnostics.Stopwatch.StartNew(); //start execution 
+            //write program here :
+            ServicesJson.JsonSerialization();
 
-            //=====EXPERIMENT 2=======
-            //List<int> period = new List<int> { 0, 23, 59, 59 };
-            //int sensorQuantity = 5;
-            //int interval = 5;
-            //Services.WriteDataCouchDB(period, sensorQuantity, interval);
-            await Services.QueryingCouchDB(Services.ConnectToCouchDB(), 720);
+            watch.Stop();
+            Console.WriteLine($"Write Time: {watch.ElapsedMilliseconds} ms"); //end of execution
 
-            //=====EXPERIMENT 3=======
-            //List<int> period = new List<int> { 0, 23, 59, 59 };
-            //int sensorQuantity = 5;
-            //int interval = 10;
-            //Services.WriteDataCouchDB(period, sensorQuantity, interval);
-            //await Services.QueryingCouchDB(Services.ConnectToCouchDB(), 1440);
 
-            //RAVENDB
-
-            //=====EXPERIMENT 2=======
-            //WRITE 
-            //List<int> period = new List<int> { 0, 23, 59, 59 };
-            //int sensorQuantity = 5;
-            //int interval = 5;
-            ////Services.WriteDataRavenDB(period, sensorQuantity, interval);
-
-            ////RETRIEVE ALL DOCS (as a list)
-            //Services.RetrieveAllDocsRavenDB(720);
-
-            //=====EXPERIMENT 3=======
-            //List<int> period = new List<int> { 0, 23, 59, 59 };
-            //int sensorQuantity = 5;
-            //int interval = 10;
-            //Services.WriteDataRavenDB(period, sensorQuantity, interval);
-
-            //RETRIEVE ALL DOCS (as a list)
-            //Services.RetrieveAllDocsRavenDB(360);
+            
         }
     }
 }

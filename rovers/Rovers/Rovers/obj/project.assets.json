@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\DELL\\c_sharp\\rovers\\Rovers\\Rovers\\Rovers.csproj",
+      "projectUniqueName": "C:\\Users\\DELL\\yusuf-frmltrx\\c_sharp\\rovers\\Rovers\\Rovers\\Rovers.csproj",
       "projectName": "Rovers",
-      "projectPath": "C:\\Users\\DELL\\c_sharp\\rovers\\Rovers\\Rovers\\Rovers.csproj",
+      "projectPath": "C:\\Users\\DELL\\yusuf-frmltrx\\c_sharp\\rovers\\Rovers\\Rovers\\Rovers.csproj",
       "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\DELL\\c_sharp\\rovers\\Rovers\\Rovers\\obj\\",
+      "outputPath": "C:\\Users\\DELL\\yusuf-frmltrx\\c_sharp\\rovers\\Rovers\\Rovers\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\DELL\\AppData\\Roaming\\NuGet\\NuGet.Config",

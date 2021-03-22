@@ -9,6 +9,7 @@
       "timeseries/1.0.0": {
         "dependencies": {
           "MyCouch": "7.5.0",
+          "Newtonsoft.Json": "12.0.3",
           "RavenDB.Client": "5.1.4"
         },
         "runtime": {

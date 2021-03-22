@@ -4967,6 +4967,7 @@
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.1": [
       "MyCouch >= 7.5.0",
+      "Newtonsoft.Json >= 12.0.3",
       "RavenDB.Client >= 5.1.4"
     ]
   },
@@ -5012,6 +5013,10 @@
           "MyCouch": {
             "target": "Package",
             "version": "[7.5.0, )"
+          },
+          "Newtonsoft.Json": {
+            "target": "Package",
+            "version": "[12.0.3, )"
           },
           "RavenDB.Client": {
             "target": "Package",

@@ -18,10 +18,11 @@ namespace timeseries
             var store = new DocumentStore
             {
                 Urls = new[] { "https://a.frmltrx.development.run/" },
-                Database = db3,
+                Database = db1,
                 Certificate = new X509Certificate2("C:\\Users\\DELL\\Downloads\\admin.client.certificate.frmltrx.pfx")
             };
-
+            //new DataBySeconds().Execute(store);
+            //new DataByDate().Execute(store);
             return store.Initialize();
         });
 

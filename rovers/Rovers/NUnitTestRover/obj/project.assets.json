@@ -4644,11 +4644,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\DELL\\c_sharp\\rovers\\Rovers\\NUnitTestRover\\NUnitTestRover.csproj",
+      "projectUniqueName": "C:\\Users\\DELL\\yusuf-frmltrx\\c_sharp\\rovers\\Rovers\\NUnitTestRover\\NUnitTestRover.csproj",
       "projectName": "NUnitTestRover",
-      "projectPath": "C:\\Users\\DELL\\c_sharp\\rovers\\Rovers\\NUnitTestRover\\NUnitTestRover.csproj",
+      "projectPath": "C:\\Users\\DELL\\yusuf-frmltrx\\c_sharp\\rovers\\Rovers\\NUnitTestRover\\NUnitTestRover.csproj",
       "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\DELL\\c_sharp\\rovers\\Rovers\\NUnitTestRover\\obj\\",
+      "outputPath": "C:\\Users\\DELL\\yusuf-frmltrx\\c_sharp\\rovers\\Rovers\\NUnitTestRover\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\DELL\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -4665,8 +4665,8 @@
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "projectReferences": {
-            "C:\\Users\\DELL\\c_sharp\\rovers\\Rovers\\Rovers\\Rovers.csproj": {
-              "projectPath": "C:\\Users\\DELL\\c_sharp\\rovers\\Rovers\\Rovers\\Rovers.csproj"
+            "C:\\Users\\DELL\\yusuf-frmltrx\\c_sharp\\rovers\\Rovers\\Rovers\\Rovers.csproj": {
+              "projectPath": "C:\\Users\\DELL\\yusuf-frmltrx\\c_sharp\\rovers\\Rovers\\Rovers\\Rovers.csproj"
             }
           }
         }
